@@ -9,6 +9,11 @@ var clock = new THREE.Clock();
 clock.start();
 var delta;
 var elapsedStop;
+var segments = 0;
+var segmentPlus = 0;
+var last = new THREE.Vector3(-10, THREE.Math.randFloat(-.5, 1), 0);
+var lastY = 0;
+var speed = 3;
 
 function createScene() {
     // Get the width and the height of the screen,
@@ -67,60 +72,64 @@ function createScene() {
 function createLights() {
     topLight = new THREE.PointLight(0xffffff, 3, 40, 2);
     topLight.position.set(8, 15 , 10);
-    topLight.shadowCameraVisible = true;
     scene.add(topLight);
 
     backLight = new THREE.PointLight(0xffffff, 2, 8);
     backLight.position.set(-1.5 , 4 , -1.5);
-    backLight.shadowCameraVisible = true;
     scene.add(backLight);
 
 
-    backLight.shadowCameraFar = 1000;
-    backLight.shadowCameraNear = 0.5;
+    backLight.shadow.camera.far = 1000;
+    backLight.shadow.camera.near = 0.5;
 
     topLight.castShadow = true;
     topLight.shadow.mapSize.width = 2048;  // default
     topLight.shadow.mapSize.height = 1024; // default
-    topLight.shadowCameraNear = 0.5;       // default
-    topLight.shadowCameraFar= 1000;     // default
+    topLight.shadow.camera.near = 0.5;       // default
+    topLight.shadow.camera.far= 1000;     // default
 }
 
-function createPlatform(){
-    var randomPoints = [];
+class Road{
+    static createPlatform(){
+        var randomPoints = [];
+        randomPoints.push(last);
+        var yUp = Math.random() / 5 - 0.1;
+        console.log(yUp);
+        for ( var i = 1; i < 20; i ++ ) {
+            var segPosX = 3 * ((20* segments) + i) - 10;
+            lastY += THREE.Math.randFloat(-.5, 0.5) + yUp;
+            last = new THREE.Vector3(segPosX, lastY, 0);
+            randomPoints.push(last);
+        }
 
-    for ( var i = 0; i < 20; i ++ ) {
-        var segPos = -i + 10;
-        randomPoints.unshift( new THREE.Vector3( segPos, THREE.Math.randFloat( -.25, .5 ), 0 ) );
-        console.log("hoi" + i);
-    }
+        var randomSpline =  new THREE.CatmullRomCurve3( randomPoints );
 
-    var randomSpline =  new THREE.SplineCurve3( randomPoints );
+        var extrudeSettings = {
+            steps			: 100,
+            bevelEnabled	: false,
+            extrudePath		: randomSpline
+        };
 
-    var extrudeSettings = {
-        steps			: 300,
-        bevelEnabled	: false,
-        extrudePath		: randomSpline
-    };
+        var pts = [];
+        var rw = 2.5, rh = 0.1;
+        pts.push( new THREE.Vector2(-rw * .5, 0) );
+        pts.push( new THREE.Vector2(-rw * .5, rh) );
+        pts.push( new THREE.Vector2(rw * .5, rh) );
+        pts.push( new THREE.Vector2(rw * .5, 0) );
 
-    var pts = [];
-    var rw = 2.5, rh = 0.1;
-    pts.push( new THREE.Vector2(-rw * .5, 0) );
-    pts.push( new THREE.Vector2(-rw * .5, rh) );
-    pts.push( new THREE.Vector2(rw * .5, rh) );
-    pts.push( new THREE.Vector2(rw * .5, 0) );
+        var shape = new THREE.Shape( pts );
 
-    var shape = new THREE.Shape( pts );
+        var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-    var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+        var material2 = new THREE.MeshLambertMaterial( { color: 0x0000ff, wireframe: false, flatShading: true } );
 
-    var material2 = new THREE.MeshLambertMaterial( { color: 0x0000ff, wireframe: false, shading: THREE.SmoothShading } );
-
-    var mesh = new THREE.Mesh( geometry, material2 );
-    scene.add(mesh);
+        var mesh = new THREE.Mesh( geometry, material2 );
+        scene.add(mesh);
 
 // Create the final object to add to the scene
-    //platform.position.y = lastY + ((Math.random() - 0.50) / speed) + (upDown * speed / 10);
+        //platform.position.y = lastY + ((Math.random() - 0.50) / speed) + (upDown * speed / 10);
+    }
+
 }
 
 function pause(){
@@ -150,6 +159,15 @@ function loop(){
     renderer.render(scene, camera);
 
     delta = clock.getDelta();
+    segmentPlus += delta * speed;
+    if(segmentPlus >= 20){
+        segmentPlus = 0;
+        segments++;
+        Road.createPlatform();
+    }
+    camera.position.x += delta * speed;
+    topLight.position.x += delta * speed;
+    backLight.position.x += delta * speed;
     //amera.lookAt(mesh);
     // call the loop function again
     requestAnimationFrame(loop);
@@ -161,10 +179,11 @@ function init() {
     // set up the scene, the camera and the renderer
     createScene();
 
-    createPlatform();
+    Road.createPlatform();
 
     // add the lights
     createLights();
 
     loop();
 }
+
