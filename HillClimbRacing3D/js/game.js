@@ -7,21 +7,8 @@ var keycode = 0;
 
 var clock = new THREE.Clock();
 clock.start();
-var platformDelta = 0;
-var platformDelta2 = 0;
 var delta;
 var elapsedStop;
-var elapsedSpeed = 0;
-var lastBlock = 0;
-
-var carSpeed = 10;
-
-
-var lastY = 5;
-var platformList = [];
-var upDown = 0;
-
-var wheel1, wheel2, wheel3, wheel4;
 
 function createScene() {
     // Get the width and the height of the screen,
@@ -33,7 +20,7 @@ function createScene() {
     // Create the scene
     scene = new THREE.Scene();
 
-    scene.fog = new THREE.Fog(0x607D8B, 2, 100);
+    //scene.fog = new THREE.Fog(0x607D8B, 2, 100);
 
     // Create the camera
     aspectRatio = WIDTH / HEIGHT;
@@ -48,10 +35,10 @@ function createScene() {
     );
 
     // Set the position of the camera
-    camera.position.x = -5;
-    camera.position.y = 4;
-    camera.position.z= 10;
-    camera.rotation.x = -0.3;
+    camera.position.x = 0;
+    camera.position.y = 1;
+    camera.position.z= 20;
+    camera.rotation.x = 0;
 
 
     // Create the renderer
@@ -99,118 +86,41 @@ function createLights() {
     topLight.shadowCameraFar= 1000;     // default
 }
 
-function createWheels(){
-    var geometryWheel = new THREE.SphereGeometry(0.15);
-    var materialWheel = new THREE.MeshPhongMaterial({color: 0x0000ff, side:THREE.DoubleSide});
-    wheel1 = new THREE.Mesh(geometryWheel, materialWheel);
-    wheel1.receiveShadow = true;
-    wheel1.castShadow = true;
-    wheel1.position.x = -5;
-    wheel1.position.z = -0.25;
-    wheel1.position.y = 10;
-    scene.add(wheel1);
+function createPlatform(){
+    var randomPoints = [];
 
-    wheel2 = new THREE.Mesh(geometryWheel, materialWheel);
-    wheel2.receiveShadow = true;
-    wheel2.castShadow = true;
-    wheel2.position.x = -5;
-    wheel2.position.z = 0.25;
-    wheel2.position.y = 10;
-    scene.add(wheel2);
-
-    wheel3 = new THREE.Mesh(geometryWheel, materialWheel);
-    wheel3.receiveShadow = true;
-    wheel3.castShadow = true;
-    wheel3.position.x = -6;
-    wheel3.position.z = -0.25;
-    wheel3.position.y = 10;
-    scene.add(wheel3);
-
-    wheel4 = new THREE.Mesh(geometryWheel, materialWheel);
-    wheel4.receiveShadow = true;
-    wheel4.castShadow = true;
-    wheel4.position.x = -6;
-    wheel4.position.z = 0.25;
-    wheel4.position.y = 10;
-    scene.add(wheel4);
-}
-
-function createPlatform(speed){
-    if(platformDelta > (1 / carSpeed)){
-        //alert("createPlatform");
-        if(platformDelta2 > (2.5 / carSpeed * 10)){
-            upDown = (Math.random() - 0.5) / 10;
-            platformDelta2 = 0;
-        }
-        var geometryPlatform = new THREE.BoxGeometry((1 / speed * 1.1), 10, 1.5);
-        var materialPlatform = new THREE.MeshPhongMaterial({color: 0x331a00, side:THREE.DoubleSide});
-        var platform = new THREE.Mesh(geometryPlatform, materialPlatform);
-        platform.receiveShadow = true;
-        platform.castShadow = true;
-        platform.position.y = lastY + ((Math.random() - 0.50) / speed) + (upDown * speed / 10);
-        lastY = platform.position.y;
-        platform.position.x = 5;
-        platformList.push(platform);
-        scene.add(platform);
-        platformDelta = platformDelta - (1 / carSpeed);
+    for ( var i = 0; i < 20; i ++ ) {
+        var segPos = -i + 10;
+        randomPoints.unshift( new THREE.Vector3( segPos, THREE.Math.randFloat( -.25, .5 ), 0 ) );
+        console.log("hoi" + i);
     }
-    movePlatform();
-}
 
-function movePlatform(){
-    for(var i = 0; i < platformList.length; i++){
-        platformList[i].position.x -= delta / 10 * carSpeed;
-        if(platformList[i].position.x < -4.9 && platformList[i].position.x > -5.1){
-            if(carSpeed > 0) {
-                carSpeed += (wheel1.position.y - (platformList[i].position.y + 5.115)) * 30;
-            }
-            if(carSpeed < 0) {
-                carSpeed += -(wheel1.position.y - (platformList[i].position.y + 5.115)) * 30;
-            }
-            wheel1.position.y = platformList[i].position.y + 5.115;
-            wheel2.position.y = platformList[i].position.y + 5.115;
-            //alert(platformList[i].position.z);
-        }
-        if(platformList[i].position.x < -5.9 && platformList[i].position.x > -6.1){
-            wheel3.position.y = platformList[i].position.y + 5.115;
-            wheel4.position.y = platformList[i].position.y + 5.115;
-            //alert(platformList[i].position.z);
-        }
-        if(platformList[i].position.x < -15){
-            if (i > -1) {
-                scene.remove(platformList[i]);
-                platformList.splice(i, 1);
-            }
-        }
-    }
-}
+    var randomSpline =  new THREE.SplineCurve3( randomPoints );
 
-function moveCameraUp(){
-    var cameraY = 0;
-    for(var i = 0; i < platformList.length; i++){
-        cameraY += platformList[i].position.y;
-    }
-    camera.position.y = wheel1.position.y + 6;
-    topLight.position.y = (cameraY / platformList.length) + 15;
-    backLight.position.y = (cameraY / platformList.length) + 4;
-}
+    var extrudeSettings = {
+        steps			: 300,
+        bevelEnabled	: false,
+        extrudePath		: randomSpline
+    };
 
-function changeSpeed(){
-    document.addEventListener("keydown", onDocumentKeyDown);
-    function onDocumentKeyDown(event) {
-        keycode = event.which;
-        if(keycode == 39 && elapsedSpeed < 0){
-            carSpeed += 1;
-            elapsedSpeed = 0.1;
-        }
-        if(keycode == 37 && elapsedSpeed < 0){
-            carSpeed -= 1;
-            elapsedSpeed = 0.1;
-        }
-    }
-    if(carSpeed > 10) {
-        carSpeed = carSpeed * 0.985;
-    }
+    var pts = [];
+    var rw = 2.5, rh = 0.1;
+    pts.push( new THREE.Vector2(-rw * .5, 0) );
+    pts.push( new THREE.Vector2(-rw * .5, rh) );
+    pts.push( new THREE.Vector2(rw * .5, rh) );
+    pts.push( new THREE.Vector2(rw * .5, 0) );
+
+    var shape = new THREE.Shape( pts );
+
+    var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+    var material2 = new THREE.MeshLambertMaterial( { color: 0x0000ff, wireframe: false, shading: THREE.SmoothShading } );
+
+    var mesh = new THREE.Mesh( geometry, material2 );
+    scene.add(mesh);
+
+// Create the final object to add to the scene
+    //platform.position.y = lastY + ((Math.random() - 0.50) / speed) + (upDown * speed / 10);
 }
 
 function pause(){
@@ -240,13 +150,7 @@ function loop(){
     renderer.render(scene, camera);
 
     delta = clock.getDelta();
-    platformDelta += delta;
-    platformDelta2 += delta;
-    elapsedSpeed -= delta;
-    createPlatform(10);
-    moveCameraUp();
-    changeSpeed();
-
+    //amera.lookAt(mesh);
     // call the loop function again
     requestAnimationFrame(loop);
 }
@@ -257,12 +161,10 @@ function init() {
     // set up the scene, the camera and the renderer
     createScene();
 
+    createPlatform();
+
     // add the lights
     createLights();
-    createWheels();
-    // add the objects
-    //camera.lookAt();
-    // start a loop that will update the objects' positions
-    // and render the scene on each frame
+
     loop();
 }
