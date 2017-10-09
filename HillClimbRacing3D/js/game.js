@@ -13,7 +13,11 @@ var segments = 0;
 var segmentPlus = 0;
 var last = new THREE.Vector3(-10, THREE.Math.randFloat(-.5, 1), 0);
 var lastY = 0;
-var speed = 3;
+var speed = 6;
+var roadsegments = new THREE.Object3D();
+var Raycaster = new THREE.Raycaster();
+var tellerVoor = 1;
+var tellerAchter = 1;
 
 function createScene() {
     // Get the width and the height of the screen,
@@ -97,7 +101,7 @@ class Road{
         console.log(yUp);
         for ( var i = 1; i < 20; i ++ ) {
             var segPosX = 3 * ((20* segments) + i) - 10;
-            lastY += THREE.Math.randFloat(-.5, 0.5) + yUp;
+            lastY += THREE.Math.randFloat(-2, 2) + yUp;
             last = new THREE.Vector3(segPosX, lastY, 0);
             randomPoints.push(last);
         }
@@ -124,14 +128,101 @@ class Road{
         var material2 = new THREE.MeshLambertMaterial( { color: 0x0000ff, wireframe: false, flatShading: true } );
 
         var mesh = new THREE.Mesh( geometry, material2 );
-        scene.add(mesh);
+        // scene.add(mesh);
+        scene.add(roadsegments);
+        roadsegments.add(mesh);
 
 // Create the final object to add to the scene
         //platform.position.y = lastY + ((Math.random() - 0.50) / speed) + (upDown * speed / 10);
     }
 
 }
+var wheels = [];
+class Car{
 
+    static createCar(){
+        //Body
+        //Wheels
+        Car.createWheel(0,-0.5);
+        Car.createWheel(0,0.5);
+        Car.createWheel(-1,-0.5);
+        Car.createWheel(-1,0.5);
+
+
+
+
+
+
+
+
+    }
+
+    static createWheel(xPos,zPos){
+        var geometry = new THREE.CylinderGeometry( 0.25, 0.25, 0.15,20 );
+        var material = new THREE.MeshLambertMaterial( {color: 0x0000ff, flatShading: true} );
+        var wheel = new THREE.Mesh( geometry, material );
+        wheel.rotation.x = Math.PI /2;
+        wheel.position.y = 5;
+        wheel.position.x = xPos;
+        wheel.position.z = zPos;
+        wheels.push(wheel);
+        scene.add(wheel);
+
+
+
+    }
+
+    static moveCar(){
+
+        for(var i = 0; i < wheels.length; i++){
+            wheels[i].position.x += delta * speed;
+            var castPos = new THREE.Vector3().addVectors( wheels[i].position, new THREE.Vector3( -.35, 0, 0 ) );
+            Raycaster.set( castPos, new THREE.Vector3(0, -1, 0) );
+
+            // see where the road is
+            var intersect = Raycaster.intersectObject( roadsegments, true );
+
+            if(intersect.length > 0) {
+
+                var newPoint = intersect[0].point.y + 0.25;
+
+                if( wheels[i].position.y - newPoint > .001 ) {
+                    if(i == 0 || i == 1) {
+                        wheels[i].position.y -= .05 * delta * tellerVoor;
+                    }
+                    if(i == 2 || i == 3) {
+                        wheels[i].position.y -= .05 * delta * tellerAchter;
+                    }
+                    if(i == 1) {
+                        tellerVoor++;
+                    }
+                    if(i == 3) {
+                        tellerAchter++;
+                    }
+                } else {
+                    wheels[i].position.y = newPoint;
+                    if(i == 0 || i == 1) {
+                        tellerVoor = 1;
+                    }
+                    if(i == 2 || i == 3) {
+                        tellerAchter = 1;
+                    }
+                }
+
+                // rotate the tire
+                wheels[i].rotation.y += 3.65 * Math.PI / 180;
+            }
+
+        }
+
+    }
+
+
+
+
+
+
+}
 function pause(){
     if((elapsedStop + 0.5) < clock.getElapsedTime()) {
         if (stop == false) {
@@ -168,7 +259,9 @@ function loop(){
     camera.position.x += delta * speed;
     topLight.position.x += delta * speed;
     backLight.position.x += delta * speed;
-    //amera.lookAt(mesh);
+    Car.moveCar();
+    camera.position.y = wheels[0].position.y;
+    // camera.lookAt(mesh);
     // call the loop function again
     requestAnimationFrame(loop);
 }
@@ -180,6 +273,7 @@ function init() {
     createScene();
 
     Road.createPlatform();
+    Car.createCar();
 
     // add the lights
     createLights();
