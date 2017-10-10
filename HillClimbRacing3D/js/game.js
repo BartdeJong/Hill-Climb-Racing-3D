@@ -21,7 +21,8 @@ var tellerAchter = 1;
 var ySnelheidVoor = 0;
 var ySnelheidAchter = 0;
 var oldPointVoor;
-var oldPointAchter
+var oldPointAchter;
+
 
 function createScene() {
     // Get the width and the height of the screen,
@@ -313,12 +314,16 @@ function loop(){
     // render the scene
     renderer.render(scene, camera);
 
+
     delta = clock.getDelta();
     segmentPlus += delta * speed;
-    if(segmentPlus >= 20){
+    if(segmentPlus >= 60){
         segmentPlus = 0;
         segments++;
         Road.createPlatform();
+        if(segments > 2){
+            roadsegments.remove(roadsegments.children[0]);
+        }
     }
     camera.position.x += delta * speed;
     topLight.position.x += delta * speed;
@@ -328,6 +333,14 @@ function loop(){
     // camera.lookAt(mesh);
     // call the loop function again
     requestAnimationFrame(loop);
+
+
+        // for(var i = 0; i < roadsegments.children.length; i++) {
+        //     if (camera.position.x > roadsegments.children[i].position.x + 10){
+        //         roadsegments.remove(roadsegments.children[i])
+        //     }
+        //
+        // }
 }
 
 window.addEventListener('load', init, false);
@@ -335,7 +348,8 @@ window.addEventListener('load', init, false);
 function init() {
     // set up the scene, the camera and the renderer
     createScene();
-
+    Road.createPlatform();
+    segments++;
     Road.createPlatform();
     Car.createCar();
 
