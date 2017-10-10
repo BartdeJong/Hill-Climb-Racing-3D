@@ -13,7 +13,7 @@ var segments = 0;
 var segmentPlus = 0;
 var last = new THREE.Vector3(-10, THREE.Math.randFloat(-.5, 1), 0);
 var lastY = 0;
-var speed = 6;
+var speed = 12;
 var roadsegments = new THREE.Object3D();
 var Raycaster = new THREE.Raycaster();
 var tellerVoor = 1;
@@ -120,7 +120,7 @@ class Road{
         };
 
         var pts = [];
-        var rw = 2.5, rh = 0.1;
+        var rw = 2.5, rh = -0.1;
         pts.push( new THREE.Vector2(-rw * .5, 0) );
         pts.push( new THREE.Vector2(-rw * .5, rh) );
         pts.push( new THREE.Vector2(rw * .5, rh) );
@@ -193,23 +193,13 @@ class Car{
             }
             else{
                 var newPoint = wheels[i].position.y;
+                if(i == 0){
+                    ySnelheidVoor = 5;
+                }
+                if(i == 2){
+                    ySnelheidAchter = 5;
+                }
             }
-                // if(i == 0) {
-            //     var puntGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-            //     var material = new THREE.MeshBasicMaterial({color: 0xffff00});
-            //     var mesh = new THREE.Mesh(puntGeometry, material);
-            //     mesh.position.x = camera.position.x;
-            //     mesh.position.y = newPoint - 0.25;
-            //     scene.add(mesh);
-            //
-            //     var material1 = new THREE.MeshBasicMaterial({color: 0xff0000});
-            //     var mesh1 = new THREE.Mesh(puntGeometry, material1);
-            //     mesh1.position.x = camera.position.x;
-            //     mesh1.position.y = wheels[i].position.y - 0.25;
-            //     scene.add(mesh1);
-            // }
-
-
                 if( wheels[i].position.y - newPoint > .001 ) {
                     if(i == 0) {
                         wheels[0].position.y += ySnelheidVoor * delta;
@@ -238,9 +228,6 @@ class Car{
                             wheels[0].position.y = newPoint;
                             wheels[1].position.y = newPoint;
                         }
-                        // else{
-                        //     ySnelheidVoor = -0.14;
-                        // }
                     }
                     if(i == 2) {
                         if(oldPointAchter < newPoint) {
@@ -253,9 +240,6 @@ class Car{
                             wheels[2].position.y = newPoint;
                             wheels[3].position.y = newPoint;
                         }
-                        // else{
-                        //     ySnelheidAchter = -0.14;
-                        // }
                     }
                     //wheels[i].position.y = newPoint;
                     if(i == 0) {
@@ -276,10 +260,7 @@ class Car{
             if(i == 2) {
                 oldPointAchter = newPoint;
             }
-            //}
-
         }
-
     }
 
 
@@ -325,12 +306,15 @@ function loop(){
             roadsegments.remove(roadsegments.children[0]);
         }
     }
-    camera.position.x += delta * speed;
+
     topLight.position.x += delta * speed;
     backLight.position.x += delta * speed;
     Car.moveCar();
-    camera.position.y = wheels[0].position.y;
-    // camera.lookAt(mesh);
+    topLight.position.y = wheels[0].position.y + 11;
+    backLight.position.y = wheels[0].position.y + 4;
+    camera.position.x = wheels[0].position.x - 5;
+    camera.position.y = wheels[0].position.y + 5;
+    camera.lookAt(wheels[0].position);
     // call the loop function again
     requestAnimationFrame(loop);
 
