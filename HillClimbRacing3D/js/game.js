@@ -18,6 +18,10 @@ var roadsegments = new THREE.Object3D();
 var Raycaster = new THREE.Raycaster();
 var tellerVoor = 1;
 var tellerAchter = 1;
+var ySnelheidVoor = 0;
+var ySnelheidAchter = 0;
+var oldPointVoor;
+var oldPointAchter
 
 function createScene() {
     // Get the width and the height of the screen,
@@ -143,10 +147,10 @@ class Car{
     static createCar(){
         //Body
         //Wheels
-        Car.createWheel(0,-0.5);
-        Car.createWheel(0,0.5);
-        Car.createWheel(-1,-0.5);
-        Car.createWheel(-1,0.5);
+        Car.createWheel(0,-0.5,3);
+        Car.createWheel(0,0.5,3);
+        Car.createWheel(-1,-0.5,3.2);
+        Car.createWheel(-1,0.5,3.2);
 
 
 
@@ -157,12 +161,12 @@ class Car{
 
     }
 
-    static createWheel(xPos,zPos){
+    static createWheel(xPos,zPos,yPos){
         var geometry = new THREE.CylinderGeometry( 0.25, 0.25, 0.15,20 );
         var material = new THREE.MeshLambertMaterial( {color: 0x0000ff, flatShading: true} );
         var wheel = new THREE.Mesh( geometry, material );
         wheel.rotation.x = Math.PI /2;
-        wheel.position.y = 5;
+        wheel.position.y = yPos;
         wheel.position.x = xPos;
         wheel.position.z = zPos;
         wheels.push(wheel);
@@ -176,42 +180,102 @@ class Car{
 
         for(var i = 0; i < wheels.length; i++){
             wheels[i].position.x += delta * speed;
-            var castPos = new THREE.Vector3().addVectors( wheels[i].position, new THREE.Vector3( -.35, 0, 0 ) );
+            var castPos = new THREE.Vector3().addVectors( wheels[i].position, new THREE.Vector3( 0.15, 0, 0 ) );
             Raycaster.set( castPos, new THREE.Vector3(0, -1, 0) );
 
             // see where the road is
             var intersect = Raycaster.intersectObject( roadsegments, true );
 
-            if(intersect.length > 0) {
-
+            //if(intersect.length > 0) {
+            if(intersect[0] != null) {
                 var newPoint = intersect[0].point.y + 0.25;
+            }
+            else{
+                var newPoint = wheels[i].position.y;
+            }
+                // if(i == 0) {
+            //     var puntGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+            //     var material = new THREE.MeshBasicMaterial({color: 0xffff00});
+            //     var mesh = new THREE.Mesh(puntGeometry, material);
+            //     mesh.position.x = camera.position.x;
+            //     mesh.position.y = newPoint - 0.25;
+            //     scene.add(mesh);
+            //
+            //     var material1 = new THREE.MeshBasicMaterial({color: 0xff0000});
+            //     var mesh1 = new THREE.Mesh(puntGeometry, material1);
+            //     mesh1.position.x = camera.position.x;
+            //     mesh1.position.y = wheels[i].position.y - 0.25;
+            //     scene.add(mesh1);
+            // }
+
 
                 if( wheels[i].position.y - newPoint > .001 ) {
-                    if(i == 0 || i == 1) {
-                        wheels[i].position.y -= .05 * delta * tellerVoor;
+                    if(i == 0) {
+                        wheels[0].position.y += ySnelheidVoor * delta;
+                        wheels[1].position.y += ySnelheidVoor * delta;
                     }
-                    if(i == 2 || i == 3) {
-                        wheels[i].position.y -= .05 * delta * tellerAchter;
+                    if(i == 2) {
+                        wheels[2].position.y += ySnelheidAchter * delta;
+                        wheels[3].position.y += ySnelheidAchter * delta;
                     }
-                    if(i == 1) {
-                        tellerVoor++;
+                    if(i == 0) {
+                        ySnelheidVoor -= 0.1;
                     }
-                    if(i == 3) {
-                        tellerAchter++;
+                    if(i == 2) {
+                        ySnelheidAchter -= 0.1;
                     }
-                } else {
-                    wheels[i].position.y = newPoint;
-                    if(i == 0 || i == 1) {
-                        tellerVoor = 1;
+                }
+                else {
+                    if(i == 0) {
+                        if(oldPointVoor < newPoint) {
+                            ySnelheidVoor -= 0.1;
+                            if(ySnelheidVoor < (newPoint - (wheels[i].position.y)) * 10 / 3 * speed) {
+                                ySnelheidVoor = (newPoint - (wheels[i].position.y)) * 10 / 3 * speed;
+                            }
+                        }
+                        else{
+                            wheels[0].position.y = newPoint;
+                            wheels[1].position.y = newPoint;
+                        }
+                        // else{
+                        //     ySnelheidVoor = -0.14;
+                        // }
                     }
-                    if(i == 2 || i == 3) {
-                        tellerAchter = 1;
+                    if(i == 2) {
+                        if(oldPointAchter < newPoint) {
+                            ySnelheidAchter -= 0.1;
+                            if(ySnelheidAchter < (newPoint - (wheels[i].position.y)) * 10 / 3 * speed) {
+                                ySnelheidAchter = (newPoint - (wheels[i].position.y)) * 10 / 3 * speed;
+                            }
+                        }
+                        else{
+                            wheels[2].position.y = newPoint;
+                            wheels[3].position.y = newPoint;
+                        }
+                        // else{
+                        //     ySnelheidAchter = -0.14;
+                        // }
+                    }
+                    //wheels[i].position.y = newPoint;
+                    if(i == 0) {
+                        wheels[0].position.y += ySnelheidVoor * delta;
+                        wheels[1].position.y += ySnelheidVoor * delta;
+                    }
+                    if(i == 2) {
+                        wheels[2].position.y += ySnelheidAchter * delta;
+                        wheels[3].position.y += ySnelheidAchter * delta;
                     }
                 }
 
                 // rotate the tire
                 wheels[i].rotation.y += 3.65 * Math.PI / 180;
+            if(i == 0) {
+                oldPointVoor = newPoint;
             }
+            if(i == 2) {
+                oldPointAchter = newPoint;
+            }
+            //}
 
         }
 
