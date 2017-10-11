@@ -157,6 +157,8 @@ CANNON.Demo = function(options){
     var renderModes = ["solid","wireframe"];
 
     function updategui(){
+        light.position.x = positieX;
+        light.target.position.set(positieX,0,0);
         if(gui){
             // First level
             for (var i in gui.__controllers){
@@ -258,6 +260,7 @@ CANNON.Demo = function(options){
 
 
     function updateVisuals(){
+
         var N = bodies.length;
 
         // Read position data into visuals
@@ -456,14 +459,14 @@ CANNON.Demo = function(options){
 
         // SCENE
         scene = that.scene = new THREE.Scene();
-        scene.fog = new THREE.Fog( 0x222222, 1000, FAR );
+        scene.fog = new THREE.Fog( 0x222222, 0, FAR );
 
         // LIGHTS
-        ambient = new THREE.AmbientLight( 0x222222 );
+        ambient = new THREE.AmbientLight( 0x222222, 50 );
         scene.add( ambient );
 
         light = new THREE.SpotLight( 0xffffff );
-        light.position.set( 30, 30, 40 );
+        light.position.set( 30, 30, 80 );
         light.target.position.set( 0, 0, 0 );
 
         light.castShadow = true;
@@ -696,6 +699,8 @@ CANNON.Demo = function(options){
             updateVisuals();
             updatePhysics();
         }
+        light.position.x = positieX;
+        ambient.position.x = positieX;
         render();
         stats.update();
     }
@@ -704,6 +709,10 @@ CANNON.Demo = function(options){
     function updatePhysics(){
         // Step world
         var timeStep = 1 / settings.stepFrequency;
+
+        light.position.x = positieX;
+        ambient.position.x = positieX;
+
 
         var now = Date.now() / 1000;
 
@@ -742,6 +751,10 @@ CANNON.Demo = function(options){
     }
 
     function render(){
+        light.position.x = positieX;
+        ambient.position.x = positieX;
+
+
         controls.update();
         renderer.clear();
         renderer.render( that.scene, camera );

@@ -301,13 +301,19 @@ THREE.TrackballControls = function ( object, domElement ) {
     };
 
     this.update = function () {
-
+        // if(vehicle.wheelInfos[0] != undefined) {
+        //     if (vehicle.wheelInfos[0] != null) {
+        //         _this.object.position.x = vehicle.wheelInfos[0].position.x;
+        //     }
+        // }
+        _this.object.position.x = positieX + 5;
+        //_this.object.
         _eye.subVectors( _this.object.position, _this.target );
 
         if ( !_this.noRotate ) {
 
             _this.rotateCamera();
-
+            // _this.object.position.x = vehicle.wheelBodies[0].position.x;
         }
 
         if ( !_this.noZoom ) {
@@ -325,8 +331,8 @@ THREE.TrackballControls = function ( object, domElement ) {
         _this.object.position.addVectors( _this.target, _eye );
 
         _this.checkDistances();
-
-        _this.object.lookAt( _this.target );
+        _this.target.x = positieX;
+       _this.object.lookAt( _this.target );
 
         if ( lastPosition.distanceToSquared( _this.object.position ) > EPS ) {
 

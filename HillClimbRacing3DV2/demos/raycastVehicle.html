@@ -20,6 +20,7 @@
     var demo = new CANNON.Demo();
     var mass = 150;
     var vehicle;
+    var positieX = 0;
 
     demo.addScene("car",function(){
         var world = demo.getWorld();
@@ -68,16 +69,16 @@
             chassisBody: chassisBody,
         });
 
-        options.chassisConnectionPointLocal.set(1, 1, 0);
+        options.chassisConnectionPointLocal.set(1.2, 1, -0.3);
         vehicle.addWheel(options);
 
-        options.chassisConnectionPointLocal.set(1, -1, 0);
+        options.chassisConnectionPointLocal.set(1.2, -1, -0.3);
         vehicle.addWheel(options);
 
-        options.chassisConnectionPointLocal.set(-1, 1, 0);
+        options.chassisConnectionPointLocal.set(-1.2, 1, -0.3);
         vehicle.addWheel(options);
 
-        options.chassisConnectionPointLocal.set(-1, -1, 0);
+        options.chassisConnectionPointLocal.set(-1.2, -1, -0.3);
         vehicle.addWheel(options);
 
         vehicle.addToWorld(world);
@@ -101,17 +102,20 @@
                 var t = vehicle.wheelInfos[i].worldTransform;
                 wheelBodies[i].position.copy(t.position);
                 wheelBodies[i].quaternion.copy(t.quaternion);
+                positieX = wheelBodies[0].position.x;
+                chassisBody.position.y = 0;
+                chassisBody.quaternion.z = 0;
             }
         });
 
         var matrix = [];
-        var sizeX = 400,
+        var sizeX = 64,
                 sizeY = 10;
 
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
-                var height = Math.cos(i / sizeX * Math.PI * 5) * 2 * 2 + 2;
+                var height = Math.cos(i / sizeX * Math.PI * 5) * 2 + 2;
                 if(i===0 || i === sizeX-1 || j===0 || j === sizeY-1)
                     height = 3;
                 matrix[i].push(height);
@@ -134,9 +138,12 @@
     document.onkeyup = handler;
 
     var maxSteerVal = 0.5;
-    var maxForce = 1000;
+    var maxForce = 300;
     var brakeForce = 1000000;
     function handler(event){
+
+
+
         var up = (event.type == 'keyup');
 
         if(!up && event.type !== 'keydown'){
@@ -151,13 +158,13 @@
         switch(event.keyCode){
 
             case 38: // forward
-                vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
-                vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
+                vehicle.applyEngineForce(up ? 0 : maxForce, 0);
+                vehicle.applyEngineForce(up ? 0 : maxForce, 1);
                 break;
 
             case 40: // backward
-                vehicle.applyEngineForce(up ? 0 : maxForce, 2);
-                vehicle.applyEngineForce(up ? 0 : maxForce, 3);
+                vehicle.applyEngineForce(up ? 0 : -maxForce, 0);
+                vehicle.applyEngineForce(up ? 0 : -maxForce, 1);
                 break;
 
             case 66: // b
@@ -167,15 +174,15 @@
                 vehicle.setBrake(brakeForce, 3);
                 break;
 
-            case 39: // right
-                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 0);
-                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 1);
-                break;
-
-            case 37: // left
-                vehicle.setSteeringValue(up ? 0 : maxSteerVal, 0);
-                vehicle.setSteeringValue(up ? 0 : maxSteerVal, 1);
-                break;
+//            case 39: // right
+//                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 0);
+//                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 1);
+//                break;
+//
+//            case 37: // left
+//                vehicle.setSteeringValue(up ? 0 : maxSteerVal, 0);
+//                vehicle.setSteeringValue(up ? 0 : maxSteerVal, 1);
+//                break;
 
         }
     }
