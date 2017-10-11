@@ -21,6 +21,7 @@
     var mass = 150;
     var vehicle;
     var positieX = 0;
+    var last = 0;
 
     demo.addScene("car",function(){
         var world = demo.getWorld();
@@ -112,15 +113,29 @@
         var sizeX = 64,
                 sizeY = 10;
 
+        var randomPoints = [];
+        var yUp = Math.random() / 5 - 0.1;
+        for ( var i = 1; i < 64; i ++ ) {
+            randomPoints.push(THREE.Math.randFloat(-1, 1) + yUp);
+        }
+
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
-                var height = Math.cos(i / sizeX * Math.PI * 5) * 2 + 2;
-                if(i===0 || i === sizeX-1 || j===0 || j === sizeY-1)
-                    height = 3;
+                var height = randomPoints[i];
                 matrix[i].push(height);
             }
         }
+
+//        for (var i = 0; i < sizeX; i++) {
+//            matrix.push([]);
+//            for (var j = 0; j < sizeY; j++) {
+//                var height = Math.cos(i / sizeX * Math.PI * 5) * 2 + 2;
+//                if(i===0 || i === sizeX-1 || j===0 || j === sizeY-1)
+//                    height = 3;
+//                matrix[i].push(height);
+//            }
+//        }
 
         var hfShape = new CANNON.Heightfield(matrix, {
             elementSize: 2
@@ -138,7 +153,7 @@
     document.onkeyup = handler;
 
     var maxSteerVal = 0.5;
-    var maxForce = 300;
+    var maxForce = 1000;
     var brakeForce = 1000000;
     function handler(event){
 
@@ -157,12 +172,12 @@
 
         switch(event.keyCode){
 
-            case 38: // forward
+            case 39: // forward
                 vehicle.applyEngineForce(up ? 0 : maxForce, 0);
                 vehicle.applyEngineForce(up ? 0 : maxForce, 1);
                 break;
 
-            case 40: // backward
+            case 37: // backward
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 0);
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 1);
                 break;
