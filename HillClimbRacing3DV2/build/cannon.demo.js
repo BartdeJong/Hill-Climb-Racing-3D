@@ -262,7 +262,7 @@ CANNON.Demo = function(options){
     function updateVisuals(){
 
         var N = bodies.length;
-
+        light.target.position.set(positieX, 0 ,0 );
         // Read position data into visuals
         for(var i=0; i<N; i++){
             var b = bodies[i], visual = visuals[i];
@@ -466,8 +466,8 @@ CANNON.Demo = function(options){
         scene.add( ambient );
 
         light = new THREE.SpotLight( 0xffffff );
-        light.position.set( 30, 30, 80 );
-        light.target.position.set( 0, 0, 0 );
+        light.position.set( positieX, 30, 80 );
+        light.target.position.set( positieX, 0, 0 );
 
         light.castShadow = true;
 
