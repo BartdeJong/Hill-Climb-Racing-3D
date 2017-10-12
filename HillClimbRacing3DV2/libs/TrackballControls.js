@@ -306,7 +306,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         //         _this.object.position.x = vehicle.wheelInfos[0].position.x;
         //     }
         // }
-        _this.object.position.x = positieX + 5;
+        _this.object.position.x = positieX + 40;
         //_this.object.
         _eye.subVectors( _this.object.position, _this.target );
 
