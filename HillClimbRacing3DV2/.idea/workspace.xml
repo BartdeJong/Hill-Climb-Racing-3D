@@ -36,18 +36,18 @@
       <file leaf-file-name="TrackballControls.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/libs/TrackballControls.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5236">
-              <caret line="308" column="48" selection-start-line="308" selection-start-column="48" selection-end-line="308" selection-end-column="48" />
+            <state relative-caret-position="192">
+              <caret line="367" column="9" selection-start-line="367" selection-start-column="7" selection-end-line="367" selection-end-column="9" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cannon.demo.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="cannon.demo.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/build/cannon.demo.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4488">
-              <caret line="264" column="51" selection-start-line="264" selection-start-column="8" selection-end-line="264" selection-end-column="51" />
+            <state relative-caret-position="192">
+              <caret line="264" column="43" selection-start-line="264" selection-start-column="43" selection-end-line="264" selection-end-column="43" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -55,11 +55,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="cannon.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build/cannon.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="192">
+              <caret line="2623" column="66" selection-start-line="2623" selection-start-column="60" selection-end-line="2623" selection-end-column="66" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="game.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/demos/game.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1033">
-              <caret line="63" column="48" selection-start-line="63" selection-start-column="48" selection-end-line="63" selection-end-column="48" />
+            <state relative-caret-position="-1683">
+              <caret line="30" column="39" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -93,8 +103,8 @@
         <option value="$PROJECT_DIR$/build/cannon.js" />
         <option value="$PROJECT_DIR$/demos/raycastVehicle.html" />
         <option value="$PROJECT_DIR$/libs/TrackballControls.js" />
-        <option value="$PROJECT_DIR$/build/cannon.demo.js" />
         <option value="$PROJECT_DIR$/demos/game.js" />
+        <option value="$PROJECT_DIR$/build/cannon.demo.js" />
       </list>
     </option>
   </component>
@@ -143,6 +153,44 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="HillClimbRacing3DV2" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HillClimbRacing3DV2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HillClimbRacing3DV2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HillClimbRacing3DV2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HillClimbRacing3DV2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="demos" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HillClimbRacing3DV2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HillClimbRacing3DV2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="build" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -247,12 +295,12 @@
       <workItem from="1507719953240" duration="8603000" />
       <workItem from="1507734328103" duration="1492000" />
       <workItem from="1507797813395" duration="1233000" />
-      <workItem from="1507799188715" duration="5598000" />
+      <workItem from="1507799188715" duration="18390000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22862000" />
+    <option name="totallyTimeSpent" value="35654000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -605,20 +653,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build/cannon.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-229435">
-          <caret line="101" column="18" selection-start-line="101" selection-start-column="18" selection-end-line="101" selection-end-column="18" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/libs/TrackballControls.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5236">
-          <caret line="308" column="48" selection-start-line="308" selection-start-column="48" selection-end-line="308" selection-end-column="48" />
+        <state relative-caret-position="192">
+          <caret line="367" column="9" selection-start-line="367" selection-start-column="7" selection-end-line="367" selection-end-column="9" />
           <folding />
         </state>
       </provider>
@@ -631,21 +669,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build/cannon.demo.js">
+    <entry file="file://$PROJECT_DIR$/demos/game.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4488">
-          <caret line="264" column="51" selection-start-line="264" selection-start-column="8" selection-end-line="264" selection-end-column="51" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="-1683">
+          <caret line="30" column="39" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="39" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demos/game.js">
+    <entry file="file://$PROJECT_DIR$/build/cannon.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1033">
-          <caret line="63" column="48" selection-start-line="63" selection-start-column="48" selection-end-line="63" selection-end-column="48" />
+        <state relative-caret-position="192">
+          <caret line="2623" column="66" selection-start-line="2623" selection-start-column="60" selection-end-line="2623" selection-end-column="66" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build/cannon.demo.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="264" column="43" selection-start-line="264" selection-start-column="43" selection-end-line="264" selection-end-column="43" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

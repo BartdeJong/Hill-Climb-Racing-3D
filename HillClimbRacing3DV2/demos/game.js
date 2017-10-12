@@ -2,9 +2,11 @@ var demo = new CANNON.Demo();
 var mass = 150;
 var vehicle;
 var positieX = 0;
+var positieZ = 0;
 var last = 0;
 var segments = 0;
 var point = 0;
+var automatic = false;
 demo.addScene("car",function(){
     var world = demo.getWorld();
     world.broadphase = new CANNON.SAPBroadphase(world);
@@ -26,7 +28,7 @@ demo.addScene("car",function(){
     chassisShape = new CANNON.Box(new CANNON.Vec3(2, 1,0.5));
     var chassisBody = new CANNON.Body({ mass: mass });
     chassisBody.addShape(chassisShape);
-    chassisBody.position.set(0, 0, 4);
+    chassisBody.position.set(-10, 0, 24);
     chassisBody.angularVelocity.set(0, 0, 0.5);
     demo.addVisual(chassisBody);
 
@@ -36,8 +38,8 @@ demo.addScene("car",function(){
         suspensionStiffness: 30,
         suspensionRestLength: 0.3,
         frictionSlip: 5,
-        dampingRelaxation: 2.3,
-        dampingCompression: 4.4,
+        dampingRelaxation: 10,
+        dampingCompression: 2,
         maxSuspensionForce: 100000,
         rollInfluence:  0.01,
         axleLocal: new CANNON.Vec3(0, 1, 0),
@@ -70,7 +72,7 @@ demo.addScene("car",function(){
     for(var i=0; i<vehicle.wheelInfos.length; i++){
         var wheel = vehicle.wheelInfos[i];
         var cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 20);
-        var wheelBody = new CANNON.Body({ mass: 1 });
+        var wheelBody = new CANNON.Body({ mass: 100 });
         var q = new CANNON.Quaternion();
         q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
         wheelBody.addShape(cylinderShape, new CANNON.Vec3(), q);
@@ -85,15 +87,22 @@ demo.addScene("car",function(){
             var t = vehicle.wheelInfos[i].worldTransform;
             wheelBodies[i].position.copy(t.position);
             wheelBodies[i].quaternion.copy(t.quaternion);
-            positieX = wheelBodies[0].position.x;
+            positieX = chassisBody.position.x;
+            positieZ = wheelBodies[0].position.z;
             chassisBody.position.y = 0;
             chassisBody.quaternion.z = 0;
-        }
+            chassisBody.quaternion.x = 0;
 
-        console.log(positieX);
+        }
         if(-(positieX / 200) > segments){
             segments++;
             createNewTrack()
+        }
+        if(automatic == true) {
+            vehicle.applyEngineForce(100, 0);
+            vehicle.applyEngineForce(100, 1);
+            vehicle.applyEngineForce(100, 2);
+            vehicle.applyEngineForce(100, 3);
         }
 
     });
@@ -104,12 +113,15 @@ demo.addScene("car",function(){
     function createInitialTrack(){
         var matrix = [];
         var sizeX = 200,
-            sizeY = 5;
+            sizeY = 7;
 
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
-                var height = 0;
+                var height = 20;
+                if(j === 0 || j === 6){
+                    height = 10;
+                }
                 matrix[i].push(height);
             }
         }
@@ -127,10 +139,10 @@ demo.addScene("car",function(){
     function createNewTrack() {
         var matrix = [];
         var sizeX = 201,
-            sizeY = 5;
+            sizeY = 7;
 
         var randomPoints = [];
-        var yUp = 0.1 * (Math.random() - 0.5);
+        var yUp = 0.2 * (Math.random() - 0.5);
         for (var i = 0; i < sizeX; i++) {
             if (i != 0) {
                 point = randomPoints[i - 1] + THREE.Math.randFloat(-0.1, 0.1) + yUp;
@@ -138,11 +150,13 @@ demo.addScene("car",function(){
             randomPoints.push(point);
         }
         randomPoints.reverse();
-        console.log(yUp);
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
-                var height = randomPoints[i];
+                var height = randomPoints[i] + 20;
+                if(j === 0 || j === 6){
+                    height = randomPoints[i] +10;
+                }
                 matrix[i].push(height);
             }
         }
@@ -153,6 +167,7 @@ demo.addScene("car",function(){
         var hfBody = new CANNON.Body({mass: 0});
         hfBody.addShape(hfShape);
         hfBody.position.set((-sizeX * hfShape.elementSize / 2) + segments * -200, -sizeY * hfShape.elementSize / 2, -1);
+        hfBody.color1 = 0x0000ff;
         world.add(hfBody);
         demo.addVisual(hfBody);
     }
@@ -181,11 +196,15 @@ function handler(event){
     vehicle.setBrake(0, 2);
     vehicle.setBrake(0, 3);
 
+
+
     switch(event.keyCode){
 
         case 39: // forward
             vehicle.applyEngineForce(up ? 0 : maxForce, 0);
             vehicle.applyEngineForce(up ? 0 : maxForce, 1);
+            vehicle.applyEngineForce(up ? 0 : maxForce, 2);
+            vehicle.applyEngineForce(up ? 0 : maxForce, 3);
             break;
 
         case 37: // backward
@@ -198,6 +217,16 @@ function handler(event){
             vehicle.setBrake(brakeForce, 1);
             vehicle.setBrake(brakeForce, 2);
             vehicle.setBrake(brakeForce, 3);
+            chassisBody.quaternion.x = 0;
+            break;
+
+        case 76:
+            if(!automatic) {
+                automatic = true;
+            }
+            else{
+                automatic = false;
+            }
             break;
 
 //            case 39: // right

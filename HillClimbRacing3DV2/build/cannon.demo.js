@@ -71,10 +71,10 @@ CANNON.Demo = function(options){
     var particleGeo = this.particleGeo = new THREE.SphereGeometry( 1, 16, 8 );
 
     // Material
-    var materialColor = 0xdddddd;
+    var materialColor = 0x0000ff;
     var solidMaterial = new THREE.MeshLambertMaterial( { color: materialColor } );
     //THREE.ColorUtils.adjustHSV( solidMaterial.color, 0, 0, 0.9 );
-    var wireframeMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe:true } );
+    var wireframeMaterial = new THREE.MeshLambertMaterial( { color: 0x0000ff, wireframe:true } );
     this.currentMaterial = solidMaterial;
     var contactDotMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
     var particleMaterial = this.particleMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
@@ -262,7 +262,8 @@ CANNON.Demo = function(options){
     function updateVisuals(){
 
         var N = bodies.length;
-        light.target.position.set(positieX, 0 ,0 );
+        light.target.position.x = positieX;
+        light.target.position.z = positieZ;
         // Read position data into visuals
         for(var i=0; i<N; i++){
             var b = bodies[i], visual = visuals[i];

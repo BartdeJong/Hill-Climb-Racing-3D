@@ -307,6 +307,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         //     }
         // }
         _this.object.position.x = positieX + 40;
+        _this.object.position.z = positieZ + 20;
         //_this.object.
         _eye.subVectors( _this.object.position, _this.target );
 
@@ -331,7 +332,8 @@ THREE.TrackballControls = function ( object, domElement ) {
         _this.object.position.addVectors( _this.target, _eye );
 
         _this.checkDistances();
-        _this.target.x = positieX;
+        _this.target.x = positieX - 30;
+        _this.target.z = positieZ;
        _this.object.lookAt( _this.target );
 
         if ( lastPosition.distanceToSquared( _this.object.position ) > EPS ) {
