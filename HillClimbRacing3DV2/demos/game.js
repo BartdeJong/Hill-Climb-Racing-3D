@@ -3,12 +3,13 @@ var mass = 150;
 var vehicle;
 var positieX = 0;
 var last = 0;
-
+var segments = 0;
+var point = 0;
 demo.addScene("car",function(){
     var world = demo.getWorld();
     world.broadphase = new CANNON.SAPBroadphase(world);
     world.gravity.set(0, 0, -10);
-    world.defaultContactMaterial.friction = 0;
+    world.defaultContactMaterial.friction = 0.005;
 
     var groundMaterial = new CANNON.Material("groundMaterial");
     var wheelMaterial = new CANNON.Material("wheelMaterial");
@@ -51,16 +52,16 @@ demo.addScene("car",function(){
         chassisBody: chassisBody,
     });
 
-    options.chassisConnectionPointLocal.set(1.2, 1, -0.3);
+    options.chassisConnectionPointLocal.set(1.6, 1, -0.3);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(1.2, -1, -0.3);
+    options.chassisConnectionPointLocal.set(1.6, -1, -0.3);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.2, 1, -0.3);
+    options.chassisConnectionPointLocal.set(-1.6, 1, -0.3);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.2, -1, -0.3);
+    options.chassisConnectionPointLocal.set(-1.6, -1, -0.3);
     vehicle.addWheel(options);
 
     vehicle.addToWorld(world);
@@ -88,44 +89,73 @@ demo.addScene("car",function(){
             chassisBody.position.y = 0;
             chassisBody.quaternion.z = 0;
         }
-    });
 
-    var matrix = [];
-    var sizeX = 300,
-        sizeY = 320 / sizeX;
-
-    var randomPoints = [];
-    var yUp = Math.random() / 5 - 0.1;
-    for ( var i = 1; i < 300; i ++ ) {
-        randomPoints.push(THREE.Math.randFloat(-1, 1) + yUp);
-    }
-
-    for (var i = 0; i < sizeX; i++) {
-        matrix.push([]);
-        for (var j = 0; j < sizeY; j++) {
-            var height = randomPoints[i];
-            matrix[i].push(height);
+        console.log(positieX);
+        if(-(positieX / 200) > segments){
+            segments++;
+            createNewTrack()
         }
+
+    });
+
+    createInitialTrack();
+
+
+    function createInitialTrack(){
+        var matrix = [];
+        var sizeX = 200,
+            sizeY = 5;
+
+        for (var i = 0; i < sizeX; i++) {
+            matrix.push([]);
+            for (var j = 0; j < sizeY; j++) {
+                var height = 0;
+                matrix[i].push(height);
+            }
+        }
+
+        var hfShape = new CANNON.Heightfield(matrix, {
+            elementSize: 1 / 200 * sizeX
+        });
+        var hfBody = new CANNON.Body({mass: 0});
+        hfBody.addShape(hfShape);
+        hfBody.position.set(-sizeX * hfShape.elementSize / 2, -sizeY * hfShape.elementSize / 2, -1);
+        world.add(hfBody);
+        demo.addVisual(hfBody);
     }
 
-//        for (var i = 0; i < sizeX; i++) {
-//            matrix.push([]);
-//            for (var j = 0; j < sizeY; j++) {
-//                var height = Math.cos(i / sizeX * Math.PI * 5) * 2 + 2;
-//                if(i===0 || i === sizeX-1 || j===0 || j === sizeY-1)
-//                    height = 3;
-//                matrix[i].push(height);
-//            }
-//        }
+    function createNewTrack() {
+        var matrix = [];
+        var sizeX = 201,
+            sizeY = 5;
 
-    var hfShape = new CANNON.Heightfield(matrix, {
-        elementSize: 2 / 64 * 300
-    });
-    var hfBody = new CANNON.Body({ mass: 0 });
-    hfBody.addShape(hfShape);
-    hfBody.position.set(-sizeX * hfShape.elementSize / 2, -sizeY * hfShape.elementSize / 2, -1);
-    world.add(hfBody);
-    demo.addVisual(hfBody);
+        var randomPoints = [];
+        var yUp = 0.1 * (Math.random() - 0.5);
+        for (var i = 0; i < sizeX; i++) {
+            if (i != 0) {
+                point = randomPoints[i - 1] + THREE.Math.randFloat(-0.1, 0.1) + yUp;
+            }
+            randomPoints.push(point);
+        }
+        randomPoints.reverse();
+        console.log(yUp);
+        for (var i = 0; i < sizeX; i++) {
+            matrix.push([]);
+            for (var j = 0; j < sizeY; j++) {
+                var height = randomPoints[i];
+                matrix[i].push(height);
+            }
+        }
+
+        var hfShape = new CANNON.Heightfield(matrix, {
+            elementSize: 1 / 200 * sizeX
+        });
+        var hfBody = new CANNON.Body({mass: 0});
+        hfBody.addShape(hfShape);
+        hfBody.position.set((-sizeX * hfShape.elementSize / 2) + segments * -200, -sizeY * hfShape.elementSize / 2, -1);
+        world.add(hfBody);
+        demo.addVisual(hfBody);
+    }
 });
 
 demo.start();
@@ -134,7 +164,7 @@ document.onkeydown = handler;
 document.onkeyup = handler;
 
 var maxSteerVal = 0.5;
-var maxForce = 1000;
+var maxForce = 300;
 var brakeForce = 1000000;
 function handler(event){
 
