@@ -94,7 +94,7 @@ demo.addScene("car",function(){
             chassisBody.quaternion.x = 0;
 
         }
-        if(-(positieX / 200) > segments){
+        if(-(positieX / 49) > segments){
             segments++;
             createNewTrack()
         }
@@ -112,14 +112,14 @@ demo.addScene("car",function(){
 
     function createInitialTrack(){
         var matrix = [];
-        var sizeX = 200,
-            sizeY = 7;
+        var sizeX = 100,
+            sizeY = 12;
 
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
                 var height = 20;
-                if(j === 0 || j === 6){
+                if(j === 0 || j === 11){
                     height = 10;
                 }
                 matrix[i].push(height);
@@ -138,8 +138,8 @@ demo.addScene("car",function(){
 
     function createNewTrack() {
         var matrix = [];
-        var sizeX = 201,
-            sizeY = 7;
+        var sizeX = 100,
+            sizeY = 12;
 
         var randomPoints = [];
         var yUp = 0.2 * (Math.random() - 0.5);
@@ -154,7 +154,7 @@ demo.addScene("car",function(){
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
                 var height = randomPoints[i] + 20;
-                if(j === 0 || j === 6){
+                if(j === 0 || j === 11){
                     height = randomPoints[i] +10;
                 }
                 matrix[i].push(height);
@@ -166,7 +166,7 @@ demo.addScene("car",function(){
         });
         var hfBody = new CANNON.Body({mass: 0});
         hfBody.addShape(hfShape);
-        hfBody.position.set((-sizeX * hfShape.elementSize / 2) + segments * -200, -sizeY * hfShape.elementSize / 2, -1);
+        hfBody.position.set((-sizeX * hfShape.elementSize / 2) + segments * -49, -sizeY * hfShape.elementSize / 2, -1);
         hfBody.color1 = 0x0000ff;
         world.add(hfBody);
         demo.addVisual(hfBody);

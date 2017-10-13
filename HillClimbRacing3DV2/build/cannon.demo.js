@@ -71,7 +71,7 @@ CANNON.Demo = function(options){
     var particleGeo = this.particleGeo = new THREE.SphereGeometry( 1, 16, 8 );
 
     // Material
-    var materialColor = 0x0000ff;
+    var materialColor = 0x00ff00;
     var solidMaterial = new THREE.MeshLambertMaterial( { color: materialColor } );
     //THREE.ColorUtils.adjustHSV( solidMaterial.color, 0, 0, 0.9 );
     var wireframeMaterial = new THREE.MeshLambertMaterial( { color: 0x0000ff, wireframe:true } );
