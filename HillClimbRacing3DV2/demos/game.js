@@ -3,6 +3,8 @@ var mass = 150;
 var vehicle;
 var positieX = 0;
 var positieZ = 0;
+var positieXwheel = 0;
+var positieZwheel = 0;
 var last = 0;
 var segments = 0;
 var point = 0;
@@ -11,6 +13,8 @@ var removebaan = 0;
 var removebaanarray = [];
 var endpoint = 0;
 var randomTrack = 0;
+var wheelposX;
+var wheelposZ;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -32,10 +36,14 @@ demo.addScene("car",function(){
     // We must add the contact materials to the world
     world.addContactMaterial(wheelGroundContactMaterial);
 
+    var chassisShapeTop;
+    chassisShapeTop = new CANNON.Box(new CANNON.Vec3(1, 1,0.5));
+
     var chassisShape;
     chassisShape = new CANNON.Box(new CANNON.Vec3(2, 1,0.5));
     var chassisBody = new CANNON.Body({ mass: mass });
     chassisBody.addShape(chassisShape);
+    chassisBody.addShape(chassisShapeTop, new CANNON.Vec3(0.4 ,0 ,0.99));
     chassisBody.position.set(-10, 0, 24);
     chassisBody.angularVelocity.set(0, 0, 0.5);
     demo.addVisual(chassisBody);
@@ -104,11 +112,14 @@ demo.addScene("car",function(){
             wheelBodies[i].position.copy(t.position);
             wheelBodies[i].quaternion.copy(t.quaternion);
             positieX = chassisBody.position.x;
-            positieZ = wheelBodies[0].position.z;
+            positieXwheel = (wheelBodies[0].position.x + wheelBodies[2].position.x) / 2;
+            positieZwheel = (wheelBodies[0].position.z + wheelBodies[2].position.z) / 2;
+            positieZ = chassisBody.position.z;
             chassisBody.position.y = 0;
             chassisBody.quaternion.z = 0;
             chassisBody.quaternion.x = 0;
-
+            wheelposX = wheelBodies[0].position.x;
+            wheelposZ = wheelBodies[0].position.z;
         }
         if(-(positieX / 49) + 6 > segments){
             segments++;

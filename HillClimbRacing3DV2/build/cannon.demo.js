@@ -72,7 +72,7 @@ CANNON.Demo = function(options){
 
     // Material
     var materialColor = 0x00ff00;
-    var solidMaterial = new THREE.MeshLambertMaterial( { color: materialColor } );
+    var solidMaterial = new THREE.MeshPhongMaterial( { color: 0x454545 } );
     //THREE.ColorUtils.adjustHSV( solidMaterial.color, 0, 0, 0.9 );
     var wireframeMaterial = new THREE.MeshLambertMaterial( { color: 0x0000ff, wireframe:true } );
     this.currentMaterial = solidMaterial;
@@ -174,7 +174,7 @@ CANNON.Demo = function(options){
         }
     }
 
-    var light, scene, ambient, stats, info;
+    var light,carlightl, carlightr, scene, ambient, stats, info;
 
     function setRenderMode(mode){
         if(renderModes.indexOf(mode) === -1){
@@ -184,12 +184,13 @@ CANNON.Demo = function(options){
         switch(mode){
             case "solid":
                 that.currentMaterial = solidMaterial;
-                light.intensity = 1;
+
                 ambient.color.setHex(0x222222);
                 break;
             case "wireframe":
                 that.currentMaterial = wireframeMaterial;
                 light.intensity = 0;
+                carlightl.intensity = carlightr.instensity = 0;
                 ambient.color.setHex(0xffffff);
                 break;
         }
@@ -264,6 +265,8 @@ CANNON.Demo = function(options){
         var N = bodies.length;
         light.target.position.x = positieX;
         light.target.position.z = positieZ;
+
+
         // Read position data into visuals
         for(var i=0; i<N; i++){
             var b = bodies[i], visual = visuals[i];
@@ -436,7 +439,7 @@ CANNON.Demo = function(options){
     var SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
     var camera, controls, renderer;
     var container;
-    var NEAR = 5, FAR = 2000;
+    var NEAR = 5, FAR = 150;
     var sceneHUD, cameraOrtho, hudMaterial;
 
     var mouseX = 0, mouseY = 0;
@@ -460,10 +463,16 @@ CANNON.Demo = function(options){
 
         // SCENE
         scene = that.scene = new THREE.Scene();
-        scene.fog = new THREE.Fog( 0x222222, 0, FAR );
+        scene.fog = new THREE.Fog( 0xffffff, 0, FAR );
+        //
+        carlightr = new THREE.SpotLight( 0xdeb039 );
+        carlightl = new THREE.SpotLight( 0xdeb039 );
+        carlightr.position.set( positieX, 0, -1.1 );
+        carlightr.target.position.set( positieX, 0, 0 );
+
 
         // LIGHTS
-        ambient = new THREE.AmbientLight( 0x222222, 50 );
+        ambient = new THREE.AmbientLight( 0x000000, 50 );
         scene.add( ambient );
 
         light = new THREE.SpotLight( 0xffffff );
@@ -480,9 +489,34 @@ CANNON.Demo = function(options){
         light.shadowMapDarkness = 0.5;
         light.shadowMapWidth = SHADOW_MAP_WIDTH;
         light.shadowMapHeight = SHADOW_MAP_HEIGHT;
+        carlightr.castShadow = true;
+
+        carlightr.shadowCameraNear = 10;
+        carlightr.shadowCameraFar = 100;//camera.far;
+        carlightr.shadowCameraFov = 30;
+
+        carlightr.shadowMapBias = 0.0039;
+        carlightr.shadowMapDarkness = 0.5;
+        carlightr.shadowMapWidth = SHADOW_MAP_WIDTH;
+        carlightr.shadowMapHeight = SHADOW_MAP_HEIGHT;
+
+        carlightl.castShadow = true;
+
+        carlightl.shadowCameraNear = 10;
+        carlightl.shadowCameraFar = 100;//camera.far;
+        carlightl.shadowCameraFov = 30;
+
+        carlightl.shadowMapBias = 0.0039;
+        carlightl.shadowMapDarkness = 0.5;
+        carlightl.shadowMapWidth = SHADOW_MAP_WIDTH;
+        carlightl.shadowMapHeight = SHADOW_MAP_HEIGHT;
+        light.intensity = 0.8;
+        carlightr.instensity = 10;
+        carlightl.instensity = 10;
 
         //light.shadowCameraVisible = true;
-
+        scene.add(carlightr);
+        scene.add(carlightl);
         scene.add( light );
         scene.add( camera );
 
@@ -701,6 +735,14 @@ CANNON.Demo = function(options){
             updatePhysics();
         }
         light.position.x = positieX;
+        carlightl.position.x = ((wheelposX - positieXwheel)*-1.1) + positieX;
+        carlightr.position.x = ((wheelposX - positieXwheel)*-1.1) + positieX;
+        carlightl.position.z = (wheelposZ - positieZwheel)*-1.1 + positieZ;
+        carlightr.position.z =(wheelposZ - positieZwheel)*-1.1 + positieZ;
+        carlightl.position.y = -1;
+        carlightr.position.y = 1;
+        carlightl.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+        carlightr.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
         ambient.position.x = positieX;
         render();
         stats.update();
