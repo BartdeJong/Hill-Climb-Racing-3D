@@ -10,6 +10,7 @@ var automatic = false;
 var removebaan = 0;
 var removebaanarray = [];
 var endpoint = 0;
+var randomTrack = 0;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -184,6 +185,8 @@ demo.addScene("car",function(){
             }
             randomPoints.push(point);
         }
+        randomTrack = Math.floor((Math.random() * 4) + 0);
+        // randomTrack = 3;
         randomPoints.reverse();
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
@@ -191,8 +194,27 @@ demo.addScene("car",function(){
                 var height = randomPoints[i] + 20;
                 if(i < 49)
                 {
-                    height = presetArray1[i]+ randomPoints[49] + 20;
-                    point = height - 20;
+                    switch(randomTrack) {
+                        case 0://sinus
+                            height = Math.sin(i * 0.2)+ (Math.random()/13) + randomPoints[49] + 20;
+                            point = height - 20;
+                            break;
+
+                        case 1://rechtvlak
+                            height = presetArray1[i]+ (Math.random()/13) + randomPoints[49] + 20;
+                            point = height - 20;
+                            break;
+
+                        case 2://cos
+                            height = 1.1* Math.cos(i * 0.1)+ (Math.random()/13) + randomPoints[49] + 20;
+                            point = height - 19;
+                            break;
+
+                        case 3://cos
+                            height = 1.1* Math.sin(i * 0.09)+ (Math.random()/13) + randomPoints[49] + 21;
+                            point = height - 22;
+                            break;
+                    }
                 }
                 if(j === 0 || j === 11){
                     height = randomPoints[i] +10;
@@ -259,8 +281,8 @@ function handler(event){
             break;
 
         case 37: // backward
-            vehicle.applyEngineForce(up ? 0 : -maxForce, 0);
-            vehicle.applyEngineForce(up ? 0 : -maxForce, 1);
+            vehicle.applyEngineForce(up ? 0 : -maxForce*5, 0);
+            vehicle.applyEngineForce(up ? 0 : -maxForce*5, 1);
             break;
 
         case 66: // b
