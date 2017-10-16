@@ -28,6 +28,7 @@ demo.addScene("car",function(){
         contactEquationStiffness: 1000
     });
 
+
     // We must add the contact materials to the world
     world.addContactMaterial(wheelGroundContactMaterial);
 
@@ -185,13 +186,13 @@ demo.addScene("car",function(){
             }
             randomPoints.push(point);
         }
-        randomTrack = Math.floor((Math.random() * 4) + 0);
-        // randomTrack = 3;
+        randomTrack = Math.floor((Math.random() * 5) + 0);
+         //randomTrack = 4;
         randomPoints.reverse();
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
-                var height = randomPoints[i] + 20;
+                var height = + (Math.random()/13) + randomPoints[i] + 20 ;
                 if(i < 49)
                 {
                     switch(randomTrack) {
@@ -213,6 +214,11 @@ demo.addScene("car",function(){
                         case 3://cos
                             height = 1.1* Math.sin(i * 0.09)+ (Math.random()/13) + randomPoints[49] + 21;
                             point = height - 22;
+                            break;
+
+                        case 4://cos, hobbelig
+                            height = 1.1* Math.cos(i * 0.08)+ (Math.random()/3) + randomPoints[49] + 21;
+                            point = height - 18.2;
                             break;
                     }
                 }
