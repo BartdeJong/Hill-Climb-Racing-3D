@@ -17,6 +17,9 @@ var wheelposX;
 var wheelposZ;
 var fuel = 100;
 var fuelUsage = 0.07;
+var score = 0;
+var BoxColor = 0;
+var CylinderColor = 0;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -41,6 +44,7 @@ demo.addScene("car",function(){
     var chassisShapeTop;
     chassisShapeTop = new CANNON.Box(new CANNON.Vec3(1, 1,0.5));
 
+    BoxColor = 1;
     var chassisShape;
     chassisShape = new CANNON.Box(new CANNON.Vec3(2, 1,0.5));
     var chassisBody = new CANNON.Body({ mass: mass });
@@ -49,11 +53,11 @@ demo.addScene("car",function(){
     chassisBody.position.set(-10, 0, 24);
     chassisBody.angularVelocity.set(0, 0, 0.5);
     demo.addVisual(chassisBody);
-
+    BoxColor = 0;
     var options = {
         radius: 0.5,
         directionLocal: new CANNON.Vec3(0, 0, -1),
-        suspensionStiffness: 30,
+        suspensionStiffness: 40,
         suspensionRestLength: 0.3,
         frictionSlip: 5,
         dampingRelaxation: 10,
@@ -93,7 +97,7 @@ demo.addScene("car",function(){
     vehicle.addWheel(options);
 
     vehicle.addToWorld(world);
-
+    CylinderColor = 1;
     var wheelBodies = [];
     for(var i=0; i<vehicle.wheelInfos.length; i++){
         var wheel = vehicle.wheelInfos[i];
@@ -105,7 +109,7 @@ demo.addScene("car",function(){
         wheelBodies.push(wheelBody);
         demo.addVisual(wheelBody);
     }
-
+    CylinderColor = 0;
     // Update wheels
     world.addEventListener('postStep', function(){
         for (var i = 0; i < vehicle.wheelInfos.length; i++) {
@@ -122,6 +126,11 @@ demo.addScene("car",function(){
             chassisBody.quaternion.x = 0;
             wheelposX = wheelBodies[0].position.x;
             wheelposZ = wheelBodies[0].position.z;
+            $("#totalfuel").text(Math.floor(fuel));
+            if(-score > chassisBody.position.x){
+                score = -chassisBody.position.x;
+                $("#totalhighscore").text(Math.floor(score) - 10);
+            }
         }
         if(-(positieX / 49) + 6 > segments){
             segments++;
@@ -299,7 +308,6 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : maxForce, 2);
                 vehicle.applyEngineForce(up ? 0 : maxForce, 3);
                 fuel -= fuelUsage;
-                $("#totalfeul").text(Math.floor(fuel));
             }
             else {
                 vehicle.applyEngineForce(up ? 0 : 0, 0);
@@ -307,7 +315,6 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : 0, 2);
                 vehicle.applyEngineForce(up ? 0 : 0, 3);
                 fuel = 0;
-                $("#totalfeul").text(Math.floor(fuel));
             }
             break;
 
@@ -318,7 +325,6 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
                 fuel -= fuelUsage;
-                $("#totalfeul").text(Math.floor(fuel));
             }
             else {
                 vehicle.applyEngineForce(up ? 0 : 0, 0);
@@ -326,7 +332,6 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : 0, 2);
                 vehicle.applyEngineForce(up ? 0 : 0, 3);
                 fuel = 0;
-                $("#totalfeul").text(Math.floor(fuel));
             }
             break;
 
