@@ -85,6 +85,9 @@ CANNON.Demo = function(options){
     var solidWheelMaterial = new THREE.MeshPhongMaterial( { color: 0x000000 } );
     this.currentWheelMaterial = solidWheelMaterial;
 
+    var solidFuelMaterial = new THREE.MeshPhongMaterial( { color: 0xc52222 } );
+    this.currentFuelMaterial = solidFuelMaterial;
+
     // Geometry caches
     var contactMeshCache = new GeometryCache(function(){
         return new THREE.Mesh( three_contactpoint_geo, contactDotMaterial );
@@ -1113,6 +1116,8 @@ CANNON.Demo.prototype.shape2mesh = function(body){
                     case 0: mesh = new THREE.Mesh(geo, this.currentMaterial);
                         break
                     case 1: mesh = new THREE.Mesh(geo, this.currentWheelMaterial);
+                        break
+                    case 2: mesh = new THREE.Mesh(geo, this.currentFuelMaterial);
                         break
                 }
                 break;

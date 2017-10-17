@@ -105,7 +105,7 @@ demo.addScene("car",function(){
     var wheelBodies = [];
     for(var i=0; i<vehicle.wheelInfos.length; i++){
         var wheel = vehicle.wheelInfos[i];
-        var cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 1, 20);
+        var cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 1.5, 20);
         var wheelBody = new CANNON.Body({ mass: 100 });
         var q = new CANNON.Quaternion();
         q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
@@ -277,6 +277,7 @@ demo.addScene("car",function(){
             }
         }
 
+        CylinderColor = 2;
         if(makeFuel == true) {
             var fuelShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius * 2.5, 20);
             var fuelBody = new CANNON.Body({mass: 100});
@@ -286,8 +287,9 @@ demo.addScene("car",function(){
             demo.addVisual(fuelBody);
             fuelArray.push(fuelBody);
             makeFuel = false;
-        }
 
+        }
+        CylinderColor = 0;
         var hfShape = new CANNON.Heightfield(matrix, {
             elementSize: 1 / 200 * sizeX
         });
