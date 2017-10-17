@@ -20,6 +20,10 @@ var fuelUsage = 0.07;
 var score = 0;
 var BoxColor = 0;
 var CylinderColor = 0;
+var fuelCounter = 25;
+var nextFuel = 200;
+var fuelArray = [];
+var makeFuel = false;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -101,7 +105,7 @@ demo.addScene("car",function(){
     var wheelBodies = [];
     for(var i=0; i<vehicle.wheelInfos.length; i++){
         var wheel = vehicle.wheelInfos[i];
-        var cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 20);
+        var cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 1, 20);
         var wheelBody = new CANNON.Body({ mass: 100 });
         var q = new CANNON.Quaternion();
         q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
@@ -130,6 +134,13 @@ demo.addScene("car",function(){
             if(-score > chassisBody.position.x){
                 score = -chassisBody.position.x;
                 $("#totalhighscore").text(Math.floor(score) - 10);
+            }
+            for(var j = 0; j < fuelArray.length; j++){
+                if(fuelArray[j].position.x > chassisBody.position.x){
+                    demo.removeVisual(fuelArray[j]);
+                    fuel = 100;
+                    fuelArray.splice(0, 1);
+                }
             }
         }
         if(-(positieX / 49) + 6 > segments){
@@ -199,6 +210,7 @@ demo.addScene("car",function(){
         var matrix = [];
         var sizeX = 100,
             sizeY = 12;
+        var lastHeight;
 
         var randomPoints = [];
         var yUp = 0.2 * (Math.random() - 0.5);
@@ -207,10 +219,19 @@ demo.addScene("car",function(){
                 point = randomPoints[i - 1] + THREE.Math.randFloat(-0.1, 0.1) + yUp;
             }
             randomPoints.push(point);
+            fuelCounter++;
+            if(fuelCounter >= nextFuel){
+                fuelCounter = 0;
+                nextFuel += 50;
+                makeFuel = true;
+            }
         }
-        randomTrack = Math.floor((Math.random() * 5) + 0);
+        randomTrack = Math.floor((Math.random() * 5));
          //randomTrack = 4;
         randomPoints.reverse();
+
+
+
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
@@ -221,26 +242,31 @@ demo.addScene("car",function(){
                         case 0://sinus
                             height = Math.sin(i * 0.2)+ (Math.random()/13) + randomPoints[49] + 20;
                             point = height - 20;
+                            lastHeight = height;
                             break;
 
                         case 1://rechtvlak
                             height = presetArray1[i]+ (Math.random()/13) + randomPoints[49] + 20;
                             point = height - 20;
+                            lastHeight = height;
                             break;
 
                         case 2://cos
                             height = 1.1* Math.cos(i * 0.1)+ (Math.random()/13) + randomPoints[49] + 20;
                             point = height - 19;
+                            lastHeight = height;
                             break;
 
                         case 3://cos
                             height = 1.1* Math.sin(i * 0.09)+ (Math.random()/13) + randomPoints[49] + 21;
                             point = height - 22;
+                            lastHeight = height;
                             break;
 
                         case 4://cos, hobbelig
                             height = 1.1* Math.cos(i * 0.08)+ (Math.random()/3) + randomPoints[49] + 21;
                             point = height - 18.2;
+                            lastHeight = height;
                             break;
                     }
                 }
@@ -251,6 +277,16 @@ demo.addScene("car",function(){
             }
         }
 
+        if(makeFuel == true) {
+            var fuelShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius * 2.5, 20);
+            var fuelBody = new CANNON.Body({mass: 100});
+            fuelBody.addShape(fuelShape);
+            fuelBody.position.x = (-sizeX * 0.5 / 2) + segments * -49 + 25;
+            fuelBody.position.z = lastHeight + 0.5;
+            demo.addVisual(fuelBody);
+            fuelArray.push(fuelBody);
+            makeFuel = false;
+        }
 
         var hfShape = new CANNON.Heightfield(matrix, {
             elementSize: 1 / 200 * sizeX
@@ -264,7 +300,7 @@ demo.addScene("car",function(){
         removebaanarray.push(hfBody);
         removebaan++;
 
-        if(removebaan > 8)
+        if(removebaan > 10)
         {
                     world.remove(removebaanarray[removebaan - 9]);
                     demo.removeVisual(removebaanarray[removebaan - 9]);
