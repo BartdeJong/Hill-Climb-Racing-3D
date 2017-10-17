@@ -15,6 +15,8 @@ var endpoint = 0;
 var randomTrack = 0;
 var wheelposX;
 var wheelposZ;
+var fuel = 5;
+var fuelUsage = 0.07;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -84,10 +86,10 @@ demo.addScene("car",function(){
     options.chassisConnectionPointLocal.set(1.6, -1, -0.3);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.6, 1, -0.3);
+    options.chassisConnectionPointLocal.set(-1.6, 1, -0.6);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.6, -1, -0.3);
+    options.chassisConnectionPointLocal.set(-1.6, -1, -0.6);
     vehicle.addWheel(options);
 
     vehicle.addToWorld(world);
@@ -291,15 +293,39 @@ function handler(event){
     switch(event.keyCode){
 
         case 39: // forward
-            vehicle.applyEngineForce(up ? 0 : maxForce, 0);
-            vehicle.applyEngineForce(up ? 0 : maxForce, 1);
-            vehicle.applyEngineForce(up ? 0 : maxForce, 2);
-            vehicle.applyEngineForce(up ? 0 : maxForce, 3);
+            if(fuel > 0) {
+                vehicle.applyEngineForce(up ? 0 : maxForce, 0);
+                vehicle.applyEngineForce(up ? 0 : maxForce, 1);
+                vehicle.applyEngineForce(up ? 0 : maxForce, 2);
+                vehicle.applyEngineForce(up ? 0 : maxForce, 3);
+                fuel -= fuelUsage;
+                console.log(fuel);
+            }
+            else {
+                vehicle.applyEngineForce(up ? 0 : 0, 0);
+                vehicle.applyEngineForce(up ? 0 : 0, 1);
+                vehicle.applyEngineForce(up ? 0 : 0, 2);
+                vehicle.applyEngineForce(up ? 0 : 0, 3);
+                fuel = 0;
+            }
             break;
 
         case 37: // backward
-            vehicle.applyEngineForce(up ? 0 : -maxForce*5, 0);
-            vehicle.applyEngineForce(up ? 0 : -maxForce*5, 1);
+            if(fuel > 0) {
+                vehicle.applyEngineForce(up ? 0 : -maxForce, 0);
+                vehicle.applyEngineForce(up ? 0 : -maxForce, 1);
+                vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
+                vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
+                fuel -= fuelUsage;
+                console.log(fuel);
+            }
+            else {
+                vehicle.applyEngineForce(up ? 0 : 0, 0);
+                vehicle.applyEngineForce(up ? 0 : 0, 1);
+                vehicle.applyEngineForce(up ? 0 : 0, 2);
+                vehicle.applyEngineForce(up ? 0 : 0, 3);
+                fuel = 0;
+            }
             break;
 
         case 66: // b
@@ -307,18 +333,11 @@ function handler(event){
             vehicle.setBrake(brakeForce, 1);
             vehicle.setBrake(brakeForce, 2);
             vehicle.setBrake(brakeForce, 3);
-            chassisBody.quaternion.x = 0;
             break;
 
-        case 76:
-            if(!automatic) {
-                automatic = true;
-            }
-            else{
-                automatic = false;
-            }
+        case 70:
+            fuel += 5;
             break;
-
 //            case 39: // right
 //                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 0);
 //                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 1);
