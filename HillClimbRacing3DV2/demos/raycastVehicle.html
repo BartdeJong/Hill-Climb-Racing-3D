@@ -18,7 +18,19 @@
             margin: 0px;
             overflow: hidden;
         }
-
+        #gameover {
+            background-color: rgba(255, 255, 255, 0.5);
+            width:100vw;
+            height:100vh;
+            font-size:40pt;
+            text-align:center;
+            line-height: 100vh;
+            vertical-align: middle;
+            position:absolute;
+            display:none;
+            font-family: 'Roboto', sans-serif;
+            z-index: 100;
+        }
 
 
     </style>
@@ -28,6 +40,10 @@
 <div id="scores">
     <span id="Fuel">Fuel: <span id="totalfuel">0</span></span></br>
     <span id="Score">Score: <span id="totalhighscore">0</span></span></br>
+</div>
+<div id="gameover">
+    <span><span id="winner"></span> Gameover!</span>
+    <span><span id="highscore"></span></span>
 </div>
 <script src="../build/cannon.js"></script>
 <script src="../build/cannon.demo.js"></script>

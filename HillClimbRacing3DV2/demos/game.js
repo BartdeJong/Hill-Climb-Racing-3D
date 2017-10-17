@@ -144,7 +144,10 @@ demo.addScene("car",function(){
             }
             if(score > 11) {
                 if (chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1 && wheelBodies[0].position.x < wheelBodies[2].position.x || fuel <= 0 && chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1) {
-                    alert("af");
+                    // alert("af");
+                    $("#highscore").text(Math.round(score-10));
+                    $("#gameover").fadeIn(1000);
+
                 }
             }
         }
