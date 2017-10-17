@@ -79,6 +79,12 @@ CANNON.Demo = function(options){
     var contactDotMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
     var particleMaterial = this.particleMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
 
+    var solidCarMaterial = new THREE.MeshPhongMaterial( { color: 0x6F6FFF } );
+    this.currentCarMaterial = solidCarMaterial;
+
+    var solidWheelMaterial = new THREE.MeshPhongMaterial( { color: 0x000000 } );
+    this.currentWheelMaterial = solidWheelMaterial;
+
     // Geometry caches
     var contactMeshCache = new GeometryCache(function(){
         return new THREE.Mesh( three_contactpoint_geo, contactDotMaterial );
@@ -1033,6 +1039,8 @@ CANNON.Demo.prototype.removeAllVisuals = function(){
 CANNON.Demo.prototype.shape2mesh = function(body){
     var wireframe = this.settings.renderMode === "wireframe";
     var obj = new THREE.Object3D();
+    var colorBox = BoxColor;
+    var colorCylinder = CylinderColor;
 
     for (var l = 0; l < body.shapes.length; l++) {
         var shape = body.shapes[l];
@@ -1070,7 +1078,13 @@ CANNON.Demo.prototype.shape2mesh = function(body){
                 var box_geometry = new THREE.BoxGeometry(  shape.halfExtents.x*2,
                     shape.halfExtents.y*2,
                     shape.halfExtents.z*2 );
-                mesh = new THREE.Mesh( box_geometry, this.currentMaterial );
+                switch (colorBox) {
+                    case 0: mesh = new THREE.Mesh(box_geometry, this.currentMaterial);
+                        break
+
+                    case 1: mesh = new THREE.Mesh(box_geometry, this.currentCarMaterial);
+                        break
+                }
                 break;
 
             case CANNON.Shape.types.CONVEXPOLYHEDRON:
@@ -1095,7 +1109,12 @@ CANNON.Demo.prototype.shape2mesh = function(body){
                 }
                 geo.computeBoundingSphere();
                 geo.computeFaceNormals();
-                mesh = new THREE.Mesh( geo, this.currentMaterial );
+                switch(colorCylinder) {
+                    case 0: mesh = new THREE.Mesh(geo, this.currentMaterial);
+                        break
+                    case 1: mesh = new THREE.Mesh(geo, this.currentWheelMaterial);
+                        break
+                }
                 break;
 
             case CANNON.Shape.types.HEIGHTFIELD:
