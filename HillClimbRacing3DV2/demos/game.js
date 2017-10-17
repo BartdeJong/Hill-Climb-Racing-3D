@@ -16,7 +16,7 @@ var randomTrack = 0;
 var wheelposX;
 var wheelposZ;
 var fuel = 100;
-var fuelUsage = 0.7;
+var fuelUsage = 0.12;
 var score = 0;
 var BoxColor = 0;
 var CylinderColor = 0;
@@ -24,11 +24,13 @@ var fuelCounter = 25;
 var nextFuel = 200;
 var fuelArray = [];
 var makeFuel = false;
+var world;
+var restartAlles = false;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 demo.addScene("car",function(){
-    var world = demo.getWorld();
+    world = demo.getWorld();
     world.broadphase = new CANNON.SAPBroadphase(world);
     world.gravity.set(0, 0, -10);
     world.defaultContactMaterial.friction = 0.005;
@@ -54,7 +56,7 @@ demo.addScene("car",function(){
     var chassisBody = new CANNON.Body({ mass: mass });
     chassisBody.addShape(chassisShape);
     chassisBody.addShape(chassisShapeTop, new CANNON.Vec3(0.4 ,0 ,0.99));
-    chassisBody.position.set(-10, 0, 24);
+    chassisBody.position.set(-10, 0, 20);
     chassisBody.angularVelocity.set(0, 0, 0.5);
     demo.addVisual(chassisBody);
     BoxColor = 0;
@@ -150,6 +152,33 @@ demo.addScene("car",function(){
 
                 }
             }
+            if(restartAlles){
+                last = 0;
+                segments = 0;
+                point = 0;
+                removebaan = 0;
+                for(var i = 0; i < removebaanarray.length; i++){
+                    world.remove(removebaanarray[i]);
+                    demo.removeVisual(removebaanarray[i]);
+                    delete removebaanarray[i];
+                }
+                removebaanarray = [];
+                endpoint = 0;
+                randomTrack = 0;
+                fuel = 100;
+                score = 0;
+                nextFuel = 200;
+                for(var i = 0; i < fuelArray.length; i++){
+                    demo.removeVisual(fuelArray[i]);
+                    delete fuelArray[i];
+                }
+                fuelArray = [];
+                makeFuel = false;
+                createInitialTrack();
+                chassisBody.position.set(-10, 0, 20);
+                chassisBody.quaternion.y = 0;
+                restartAlles = false;
+            }
         }
         if(-(positieX / 49) + 6 > segments){
             segments++;
@@ -183,7 +212,11 @@ demo.addScene("car",function(){
 
     });
 
+
     createInitialTrack();
+
+
+
 
 
     function createInitialTrack(){
@@ -329,6 +362,10 @@ var maxSteerVal = 0.5;
 var maxForce = 300;
 var brakeForce = 10;
 
+function restartGame() {
+    restartAlles = true;
+}
+
 function handler(event){
 
 
@@ -391,6 +428,10 @@ function handler(event){
 
         case 70:
             fuel += 5;
+            break;
+
+        case 82:
+            restartGame();
             break;
 //            case 39: // right
 //                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 0);
