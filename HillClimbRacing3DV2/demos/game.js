@@ -304,6 +304,7 @@ demo.addScene("car",function(){
         {
                     world.remove(removebaanarray[removebaan - 9]);
                     demo.removeVisual(removebaanarray[removebaan - 9]);
+                    delete removebaanarray[removebaan - 9];
         }
     }
 
