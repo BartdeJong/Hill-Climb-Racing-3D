@@ -16,7 +16,7 @@ var randomTrack = 0;
 var wheelposX;
 var wheelposZ;
 var fuel = 100;
-var fuelUsage = 0.07;
+var fuelUsage = 0.7;
 var score = 0;
 var BoxColor = 0;
 var CylinderColor = 0;
@@ -61,7 +61,7 @@ demo.addScene("car",function(){
     var options = {
         radius: 0.5,
         directionLocal: new CANNON.Vec3(0, 0, -1),
-        suspensionStiffness: 40,
+        suspensionStiffness: 30,
         suspensionRestLength: 0.3,
         frictionSlip: 5,
         dampingRelaxation: 10,
@@ -94,10 +94,10 @@ demo.addScene("car",function(){
     options.chassisConnectionPointLocal.set(1.6, -1, -0.3);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.6, 1, -0.6);
+    options.chassisConnectionPointLocal.set(-1.6, 1, -0.3);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.6, -1, -0.6);
+    options.chassisConnectionPointLocal.set(-1.6, -1, -0.3);
     vehicle.addWheel(options);
 
     vehicle.addToWorld(world);
@@ -140,6 +140,11 @@ demo.addScene("car",function(){
                     demo.removeVisual(fuelArray[j]);
                     fuel = 100;
                     fuelArray.splice(0, 1);
+                }
+            }
+            if(score > 11) {
+                if (chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1 && wheelBodies[0].position.x < wheelBodies[2].position.x || fuel <= 0 && chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1) {
+                    alert("af");
                 }
             }
         }
