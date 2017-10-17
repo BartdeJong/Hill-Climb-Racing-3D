@@ -5,13 +5,36 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        #scores {
+            font-size: 25pt;
+            color: black;
+            position: absolute;
+            font-family: Rockwell, sans-serif;
+            z-index: 50;
+        }
+
+        body{
+            margin: 0px;
+            overflow: hidden;
+        }
+
+
+
+    </style>
+
 </head>
 <body>
+<div id="scores">
+    <span id="fuel">Fuel: <span id="totalfeul">0</span></span></br>
+    <span id="highScore">Highscore: <span id="totalhighscore">0</span></span></br>
+</div>
 <script src="../build/cannon.js"></script>
 <script src="../build/cannon.demo.js"></script>
 <script src="../libs/dat.gui.js"></script>
 <script src="../libs/Three.js"></script>
 <script src="../libs/TrackballControls.js"></script>
+<script src="../libs/jquery-3.2.1.min.js"></script>
 <script src="../libs/Detector.js"></script>
 <script src="../libs/Stats.js"></script>
 <script src="../libs/smoothie.js"></script>

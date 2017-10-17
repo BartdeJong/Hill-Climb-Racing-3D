@@ -15,7 +15,7 @@ var endpoint = 0;
 var randomTrack = 0;
 var wheelposX;
 var wheelposZ;
-var fuel = 5;
+var fuel = 100;
 var fuelUsage = 0.07;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -299,7 +299,7 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : maxForce, 2);
                 vehicle.applyEngineForce(up ? 0 : maxForce, 3);
                 fuel -= fuelUsage;
-                console.log(fuel);
+                $("#totalfeul").text(Math.floor(fuel));
             }
             else {
                 vehicle.applyEngineForce(up ? 0 : 0, 0);
@@ -307,6 +307,7 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : 0, 2);
                 vehicle.applyEngineForce(up ? 0 : 0, 3);
                 fuel = 0;
+                $("#totalfeul").text(Math.floor(fuel));
             }
             break;
 
@@ -317,7 +318,7 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
                 fuel -= fuelUsage;
-                console.log(fuel);
+                $("#totalfeul").text(Math.floor(fuel));
             }
             else {
                 vehicle.applyEngineForce(up ? 0 : 0, 0);
@@ -325,6 +326,7 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : 0, 2);
                 vehicle.applyEngineForce(up ? 0 : 0, 3);
                 fuel = 0;
+                $("#totalfeul").text(Math.floor(fuel));
             }
             break;
 
