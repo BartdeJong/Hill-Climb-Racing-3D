@@ -243,7 +243,7 @@ demo.addScene("car",function(){
             for (var j = 0; j < sizeY; j++) {
                 var height = 20;
                 if(j === 0 || j === 11){
-                    height = 10;
+                    height = 18;
                 }
                 matrix[i].push(height);
             }
@@ -266,6 +266,7 @@ demo.addScene("car",function(){
         var sizeX = 100,
             sizeY = 12;
         var lastHeight;
+        var lastHeight2;
 
         var randomPoints = [];
         var yUp = 0.2 * (Math.random() - 0.5);
@@ -291,6 +292,7 @@ demo.addScene("car",function(){
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
                 var height = + (Math.random()/13) + randomPoints[i] + 20 ;
+                lastHeight2 = height;
                 if(i < 49)
                 {
                     switch(randomTrack) {
@@ -298,35 +300,40 @@ demo.addScene("car",function(){
                             height = Math.sin(i * 0.2)+ (Math.random()/13) + randomPoints[49] + 20;
                             point = height - 20;
                             lastHeight = height;
+                            lastHeight2 = height;
                             break;
 
                         case 1://rechtvlak
                             height = presetArray1[i]+ (Math.random()/13) + randomPoints[49] + 20;
                             point = height - 20;
                             lastHeight = height;
+                            lastHeight2 = height;
                             break;
 
                         case 2://cos
                             height = 1.1* Math.cos(i * 0.1)+ (Math.random()/13) + randomPoints[49] + 20;
                             point = height - 19;
                             lastHeight = height;
+                            lastHeight2 = height;
                             break;
 
                         case 3://cos
                             height = 1.1* Math.sin(i * 0.09)+ (Math.random()/13) + randomPoints[49] + 21;
                             point = height - 22;
                             lastHeight = height;
+                            lastHeight2 = height - (50 - i) * 0.06;
                             break;
 
                         case 4://cos, hobbelig
                             height = 1.1* Math.cos(i * 0.08)+ (Math.random()/3) + randomPoints[49] + 21;
                             point = height - 18.2;
                             lastHeight = height;
+                            lastHeight2 = height;
                             break;
                     }
                 }
                 if(j === 0 || j === 11){
-                    height = randomPoints[i] +10;
+                    height = lastHeight2 - 2;
                 }
                 matrix[i].push(height);
             }

@@ -472,7 +472,7 @@ CANNON.Demo = function(options){
 
         // SCENE
         scene = that.scene = new THREE.Scene();
-        scene.fog = new THREE.Fog( 0xffffff, 0, FAR );
+        scene.fog = new THREE.Fog( 0xffffff, 80, FAR );
         //
         carlightr = new THREE.SpotLight( 0xdeb039 );
         carlightl = new THREE.SpotLight( 0xdeb039 );
