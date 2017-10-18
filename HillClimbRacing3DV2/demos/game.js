@@ -22,11 +22,17 @@ var BoxColor = 0;
 var CylinderColor = 0;
 var fuelCounter = 25;
 var nextFuel = 200;
-var fuelArray = [];
 var makeFuel = false;
 var restartAlles = false;
 var gameOver = false;
+var treeSide = 0;
+var teller = 0;
+var teller2 = 0;
 
+var fuelArray = [];
+var dommeblokjes = [];
+var BottomTreeArray = [];
+var TopTreeArray = [];
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 demo.addScene("car",function(){
@@ -46,6 +52,8 @@ demo.addScene("car",function(){
 
     // We must add the contact materials to the world
     world.addContactMaterial(wheelGroundContactMaterial);
+
+
 
     var chassisShapeTop;
     chassisShapeTop = new CANNON.Box(new CANNON.Vec3(1, 1,0.5));
@@ -150,6 +158,16 @@ demo.addScene("car",function(){
                     fuelArray.splice(0, 1);
                 }
             }
+            for(var i2 = 0; i2 < BottomTreeArray.length; i2++)
+            {
+                if(BottomTreeArray[i2].position.x > chassisBody.position.x + 30 )
+                {
+                    BottomTreeArray[i2].position.x = chassisBody.position.x -160 ;
+                    BottomTreeArray[i2].position.z += chassisBody.position.z - 20;
+                    TopTreeArray[i2].position.x = chassisBody.position.x - 160;
+                    TopTreeArray[i2].position.z += chassisBody.position.z - 20;
+                }
+            }
             if(score > 11) {
                 if (chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1 && wheelBodies[0].position.x < wheelBodies[2].position.x || fuel <= 0 && chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1) {
                     // alert("af");
@@ -220,7 +238,26 @@ demo.addScene("car",function(){
         // wallBody.quaternion.y = 0;
         // wallBody.quaternion.z = 0;
 
+        teller2++;
+        if(teller2 > 3) {
+            wallShape2 = new CANNON.Box(new CANNON.Vec3(0.10, 0.10, 0.10));
+            var wallBody2 = new CANNON.Body({mass: 0.0001});
+            wallBody2.addShape(wallShape2);
+            wallBody2.position.set(wheelBodies[0].position.x + 0.6, wheelBodies[0].position.y - 0.4, wheelBodies[0].position.z + 0.1);
+            world.add(wallBody2);
+            demo.addVisual(wallBody2);
+            dommeblokjes.push(wallBody2);
 
+            if (dommeblokjes.length > 15) {
+                world.remove(dommeblokjes[teller]);
+                demo.removeVisual(dommeblokjes[teller]);
+                teller++;
+            }
+            for (var i = 0; i < dommeblokjes.length; i++) {
+                dommeblokjes[i].position.x += 0.1;
+            }
+            teller2 = 0;
+        }
 
 
 
@@ -228,7 +265,40 @@ demo.addScene("car",function(){
 
 
     createInitialTrack();
+    createTrees();
+    function createTrees() {
+        for(var i = 0; i < 40; i++)
+        {
+            treeSide = Math.floor((Math.random() * 2) + 0);
+            var treeBotShape = new CANNON.Box(new CANNON.Vec3(1,1,20))
+            var TreeBodyBot = new CANNON.Body({ mass: mass });
+            TreeBodyBot.addShape(treeBotShape);
+            TreeBodyBot.position.x = 20 +Math.floor((Math.random() * -160) + 0);
+            if(treeSide == 0) {
+                TreeBodyBot.position.y = (10)+((Math.random() * 20) + 0) ;
+                TreeBodyBot.position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) + 5);
 
+            }
+            if(treeSide == 1) {
+                TreeBodyBot.position.y = (-10)+((Math.random() * -20) + 0) ;
+                TreeBodyBot.position.z = (chassisBody.position.z - 40) + Math.floor((Math.random() * 10) + 20);
+
+            }
+            demo.addVisual(TreeBodyBot);
+            BottomTreeArray.push(TreeBodyBot);
+
+
+            var treeTopShape = new CANNON.Box(new CANNON.Vec3(5,5,6))
+            var TreeBodyTop = new CANNON.Body({ mass: mass });
+            TreeBodyTop.addShape(treeTopShape);
+            TreeBodyTop.position.set(BottomTreeArray[i].position.x,BottomTreeArray[i].position.y , BottomTreeArray[i].position.z+20);
+            BoxColor = 2;
+            demo.addVisual(TreeBodyTop);
+            BoxColor = 0;
+            TopTreeArray.push(TreeBodyTop);
+        }
+
+    }
 
 
 
@@ -427,20 +497,21 @@ function handler(event){
 
         case 37: // backward
             if(fuel > 0) {
-                vehicle.applyEngineForce(up ? 0 : -maxForce, 0);
-                vehicle.applyEngineForce(up ? 0 : -maxForce, 1);
-                vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
-                vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
-                if(!gameOver) {
-                    fuel -= fuelUsage;
+                if(vehicle.chassisBody.velocity.x >= 0) {
+                    vehicle.applyEngineForce(up ? 0 : -maxForce, 0);
+                    vehicle.applyEngineForce(up ? 0 : -maxForce, 1);
+                    vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
+                    vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
+                    if (!gameOver) {
+                        fuel -= fuelUsage;
+                    }
                 }
-            }
-            else {
-                vehicle.applyEngineForce(up ? 0 : 0, 0);
-                vehicle.applyEngineForce(up ? 0 : 0, 1);
-                vehicle.applyEngineForce(up ? 0 : 0, 2);
-                vehicle.applyEngineForce(up ? 0 : 0, 3);
-                fuel = 0;
+                else{
+                    vehicle.setBrake(brakeForce, 0);
+                    vehicle.setBrake(brakeForce, 1);
+                    vehicle.setBrake(brakeForce, 2);
+                    vehicle.setBrake(brakeForce, 3);
+                }
             }
             break;
 
