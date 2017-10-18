@@ -24,13 +24,12 @@ var fuelCounter = 25;
 var nextFuel = 200;
 var fuelArray = [];
 var makeFuel = false;
-var world;
 var restartAlles = false;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 demo.addScene("car",function(){
-    world = demo.getWorld();
+    var world = demo.getWorld();
     world.broadphase = new CANNON.SAPBroadphase(world);
     world.gravity.set(0, 0, -10);
     world.defaultContactMaterial.friction = 0.005;
@@ -158,9 +157,11 @@ demo.addScene("car",function(){
                 point = 0;
                 removebaan = 0;
                 for(var i = 0; i < removebaanarray.length; i++){
-                    world.remove(removebaanarray[i]);
-                    demo.removeVisual(removebaanarray[i]);
-                    delete removebaanarray[i];
+                    if(removebaanarray[i] != null) {
+                        world.remove(removebaanarray[i]);
+                        demo.removeVisual(removebaanarray[i]);
+                        delete removebaanarray[i];
+                    }
                 }
                 removebaanarray = [];
                 endpoint = 0;
@@ -175,9 +176,13 @@ demo.addScene("car",function(){
                 fuelArray = [];
                 makeFuel = false;
                 createInitialTrack();
+                chassisBody.velocity.x = 0;
+                chassisBody.velocity.y = 0;
+                chassisBody.velocity.z = 0;
                 chassisBody.position.set(-10, 0, 20);
                 chassisBody.quaternion.y = 0;
                 restartAlles = false;
+                $("#gameover").fadeOut(1000);
             }
         }
         if(-(positieX / 49) + 6 > segments){
