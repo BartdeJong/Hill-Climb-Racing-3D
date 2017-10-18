@@ -25,6 +25,7 @@ var nextFuel = 200;
 var fuelArray = [];
 var makeFuel = false;
 var restartAlles = false;
+var gameOver = false;
 
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -136,6 +137,12 @@ demo.addScene("car",function(){
                 score = -chassisBody.position.x;
                 $("#totalhighscore").text(Math.floor(score) - 10);
             }
+            if(gameOver)
+            {
+                chassisBody.velocity.x = 0;
+                chassisBody.velocity.y = 0;
+                chassisBody.velocity.z = 0;
+            }
             for(var j = 0; j < fuelArray.length; j++){
                 if(fuelArray[j].position.x > chassisBody.position.x){
                     demo.removeVisual(fuelArray[j]);
@@ -148,6 +155,7 @@ demo.addScene("car",function(){
                     // alert("af");
                     $("#highscore").text(Math.round(score-10));
                     $("#gameover").fadeIn(1000);
+                    gameOver = true;
 
                 }
             }
@@ -183,6 +191,7 @@ demo.addScene("car",function(){
                 chassisBody.quaternion.y = 0;
                 restartAlles = false;
                 $("#gameover").fadeOut(1000);
+                gameOver = false;
             }
         }
         if(-(positieX / 49) + 6 > segments){
@@ -396,7 +405,9 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : maxForce, 1);
                 vehicle.applyEngineForce(up ? 0 : maxForce, 2);
                 vehicle.applyEngineForce(up ? 0 : maxForce, 3);
-                fuel -= fuelUsage;
+                if(!gameOver) {
+                    fuel -= fuelUsage;
+                }
             }
             else {
                 vehicle.applyEngineForce(up ? 0 : 0, 0);
@@ -413,7 +424,9 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 1);
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
                 vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
-                fuel -= fuelUsage;
+                if(!gameOver) {
+                    fuel -= fuelUsage;
+                }
             }
             else {
                 vehicle.applyEngineForce(up ? 0 : 0, 0);
