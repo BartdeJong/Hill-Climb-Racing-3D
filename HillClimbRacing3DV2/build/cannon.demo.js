@@ -11,7 +11,8 @@ CANNON = CANNON || {};
 CANNON.Demo = function(options){
 
     var that = this;
-
+    var lichtTeller = 0;
+    var lichtUit = 0;
     // API
     this.addScene = addScene;
     this.restartCurrentScene = restartCurrentScene;
@@ -486,6 +487,7 @@ CANNON.Demo = function(options){
         // LIGHTS
         ambient = new THREE.AmbientLight( 0x000000, 50 );
         scene.add( ambient );
+        ambient.intensity = 1;
 
         light = new THREE.SpotLight( 0xffffff );
         light.position.set( positieX, 30, 80 );
@@ -742,6 +744,47 @@ CANNON.Demo = function(options){
 
     function animate(){
         requestAnimationFrame( animate );
+        var snelheid = 2;
+        var Red = 0;
+        var Green = 0;
+        var Blue = 0;
+        if(positieX > -255 * snelheid) {
+            Green = Math.round(255 + positieX / snelheid);
+            Blue = Math.round(255 + positieX / snelheid);
+            Red = 255;
+            light.intensity = 0.8;
+        }
+        if(positieX <= -255 * snelheid && positieX > -510 * snelheid){
+            Red = 255 + Math.round(positieX / snelheid) + 255;
+        }
+        if(positieX <= -400 * snelheid){
+            $("#scores").css( { 'color': 'white' } );
+        }
+        if(positieX <= -510 * snelheid && positieX > -765 * snelheid){
+            light.intensity = 0.8 + (0.7 * (positieX / snelheid + 510) / 255);
+        }
+        if(positieX <= -765 * snelheid){
+            lichtTeller++;
+            if(lichtTeller > lichtUit - 10) {
+                carlightl.intensity = 0;
+                carlightr.intensity = 0;
+            }
+            else{
+                carlightl.intensity = 1;
+                carlightr.intensity = 1;
+            }
+            if(lichtTeller > lichtUit){
+                lichtTeller = 0;
+                lichtUit = Math.random() * 100;
+            }
+        }
+
+        console.log(positieX);
+        function rgb(r, g, b){
+            return "rgb("+r+","+g+","+b+")";
+        }
+        scene.fog.color.set(rgb(Red, Green, Blue));
+        renderer.setClearColor( scene.fog.color, 1 );
         if(!settings.paused){
             updateVisuals();
             updatePhysics();
