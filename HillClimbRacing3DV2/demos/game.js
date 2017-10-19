@@ -28,6 +28,9 @@ var gameOver = false;
 var treeSide = 0;
 var teller = 0;
 var teller2 = 0;
+var clock = new THREE.Clock();
+clock.start();
+var delta;
 
 var fuelArray = [];
 var dommeblokjes = [];
@@ -126,6 +129,7 @@ demo.addScene("car",function(){
     CylinderColor = 0;
     // Update wheels
     world.addEventListener('postStep', function(){
+        delta  += clock.getDelta();
         for (var i = 0; i < vehicle.wheelInfos.length; i++) {
             vehicle.updateWheelTransform(i);
             var t = vehicle.wheelInfos[i].worldTransform;
@@ -158,27 +162,30 @@ demo.addScene("car",function(){
                     fuelArray.splice(0, 1);
                 }
             }
-            for(var i2 = 0; i2 < BottomTreeArray.length; i2++)
-            {
-                if(BottomTreeArray[i2].position.x > chassisBody.position.x + 30 )
-                {
-                    BottomTreeArray[i2].position.x = chassisBody.position.x -160 ;
-                    BottomTreeArray[i2].position.z = chassisBody.position.z - 30;
-                    TopTreeArray[i2].position.x = chassisBody.position.x - 160;
-                    TopTreeArray[i2].position.z = chassisBody.position.z - 10;
-                    if(BottomTreeArray[i2].position.y < 0){
-                        BottomTreeArray[i2].position.z += 10;
-                        TopTreeArray[i2].position.z += 10;
+                for (var i2 = 0; i2 < BottomTreeArray.length; i2++) {
+                    if (BottomTreeArray[i2].position.x > chassisBody.position.x + 30) {
+                        BottomTreeArray[i2].position.x = chassisBody.position.x - 160;
+                        BottomTreeArray[i2].position.z = chassisBody.position.z - 30;
+                        TopTreeArray[i2].position.x = chassisBody.position.x - 160;
+                        TopTreeArray[i2].position.z = chassisBody.position.z - 10;
+                        if (BottomTreeArray[i2].position.y < 0) {
+                            BottomTreeArray[i2].position.z += 10;
+                            TopTreeArray[i2].position.z += 10;
+                        }
                     }
                 }
-            }
+
             if(score > 11) {
                 if (chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1 && wheelBodies[0].position.x < wheelBodies[2].position.x || fuel <= 0 && chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1) {
-                    // alert("af");
-                    $("#highscore").text(Math.round(score-10));
-                    $("#gameover").fadeIn(1000);
-                    gameOver = true;
-
+                    if(delta > 1) {
+                        // alert("af");
+                        $("#highscore").text(Math.round(score - 10));
+                        $("#gameover").fadeIn(1000);
+                        gameOver = true;
+                    }
+                }
+                else{
+                    delta = 0;
                 }
             }
             if(restartAlles){
@@ -211,6 +218,22 @@ demo.addScene("car",function(){
                 chassisBody.velocity.z = 0;
                 chassisBody.position.set(-10, 0, 20);
                 chassisBody.quaternion.y = 0;
+                for(var j  =0; j < BottomTreeArray.length; j++)
+                {
+                    treeSide = Math.floor((Math.random() * 2) + 0);
+                    BottomTreeArray[j].position.x = 20 +Math.floor((Math.random() * -160) + 0);
+                    if(treeSide == 0) {
+                        BottomTreeArray[j].position.y = (10)+((Math.random() * 20) + 0) ;
+                        BottomTreeArray[j].position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) + 5);
+
+                    }
+                    if(treeSide == 1) {
+                        BottomTreeArray[j].position.y = (-10)+((Math.random() * -20) + 0) ;
+                        BottomTreeArray[j].position.z = (chassisBody.position.z - 40) + Math.floor((Math.random() * 10) + 20);
+
+                    }
+                    TopTreeArray[j].position.set(BottomTreeArray[j].position.x,BottomTreeArray[j].position.y , BottomTreeArray[j].position.z+20);
+                }
                 restartAlles = false;
                 $("#gameover").fadeOut(1000);
                 gameOver = false;
@@ -263,7 +286,10 @@ demo.addScene("car",function(){
             teller2 = 0;
         }
 
-
+        vehicle.setBrake(0, 0);
+        vehicle.setBrake(0, 1);
+        vehicle.setBrake(0, 2);
+        vehicle.setBrake(0, 3);
 
     });
 
@@ -455,7 +481,7 @@ document.onkeyup = handler;
 
 var maxSteerVal = 0.5;
 var maxForce = 300;
-var brakeForce = 10;
+var brakeForce = 30;
 
 function restartGame() {
     restartAlles = true;
