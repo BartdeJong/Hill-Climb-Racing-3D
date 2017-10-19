@@ -28,14 +28,18 @@ var gameOver = false;
 var treeSide = 0;
 var teller = 0;
 var teller2 = 0;
+var terrain = 0;
+var terrainvalue = 200;
 var clock = new THREE.Clock();
 clock.start();
 var delta;
+
 
 var fuelArray = [];
 var dommeblokjes = [];
 var BottomTreeArray = [];
 var TopTreeArray = [];
+var SpikeArray = [];
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 demo.addScene("car",function(){
@@ -55,8 +59,6 @@ demo.addScene("car",function(){
 
     // We must add the contact materials to the world
     world.addContactMaterial(wheelGroundContactMaterial);
-
-
 
     var chassisShapeTop;
     chassisShapeTop = new CANNON.Box(new CANNON.Vec3(1, 1,0.5));
@@ -162,11 +164,12 @@ demo.addScene("car",function(){
                     fuelArray.splice(0, 1);
                 }
             }
+            if(terrain == 0) {
                 for (var i2 = 0; i2 < BottomTreeArray.length; i2++) {
                     if (BottomTreeArray[i2].position.x > chassisBody.position.x + 30) {
-                        BottomTreeArray[i2].position.x = chassisBody.position.x - 160;
+                        BottomTreeArray[i2].position.x = chassisBody.position.x - 160 - Math.floor((Math.random() * -10) + 0);
                         BottomTreeArray[i2].position.z = chassisBody.position.z - 30;
-                        TopTreeArray[i2].position.x = chassisBody.position.x - 160;
+                        TopTreeArray[i2].position.x = BottomTreeArray[i2].position.x;
                         TopTreeArray[i2].position.z = chassisBody.position.z - 10;
                         if (BottomTreeArray[i2].position.y < 0) {
                             BottomTreeArray[i2].position.z += 10;
@@ -174,6 +177,21 @@ demo.addScene("car",function(){
                         }
                     }
                 }
+
+            }
+
+                for (var i3 = 0; i3 < SpikeArray.length; i3++)
+                {
+                    if(SpikeArray[i3].position.x > chassisBody.position.x +30) {
+                        SpikeArray[i3].position.x = chassisBody.position.x - 160;
+                        SpikeArray[i3].position.z = chassisBody.position.z - 10;
+                        if (SpikeArray[i3].position.y < 0) {
+                            SpikeArray[i3].position.z += 10;
+
+                        }
+                    }
+
+                 }
 
             if(score > 11) {
                 if (chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1 && wheelBodies[0].position.x < wheelBodies[2].position.x || fuel <= 0 && chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1) {
@@ -222,18 +240,23 @@ demo.addScene("car",function(){
                 {
                     treeSide = Math.floor((Math.random() * 2) + 0);
                     BottomTreeArray[j].position.x = 20 +Math.floor((Math.random() * -160) + 0);
+                    SpikeArray[j].position.x = chassisBody.position.x -terrainvalue +Math.floor((Math.random() * -160) + 0);
                     if(treeSide == 0) {
                         BottomTreeArray[j].position.y = (10)+((Math.random() * 20) + 0) ;
                         BottomTreeArray[j].position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) + 5);
-
+                        SpikeArray[j].position.y = (10)+((Math.random() * 20) + 0) ;
+                        SpikeArray[j].position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) + 25);
                     }
                     if(treeSide == 1) {
                         BottomTreeArray[j].position.y = (-10)+((Math.random() * -20) + 0) ;
                         BottomTreeArray[j].position.z = (chassisBody.position.z - 40) + Math.floor((Math.random() * 10) + 20);
-
+                        SpikeArray[j].position.y = (-10)+((Math.random() * -20) + 0) ;
+                        SpikeArray[j].position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) +25);
                     }
                     TopTreeArray[j].position.set(BottomTreeArray[j].position.x,BottomTreeArray[j].position.y , BottomTreeArray[j].position.z+20);
+
                 }
+                terrain = 0;
                 restartAlles = false;
                 $("#gameover").fadeOut(1000);
                 gameOver = false;
@@ -285,6 +308,14 @@ demo.addScene("car",function(){
             }
             teller2 = 0;
         }
+        if (score > 200)
+        {
+            terrain = 1;
+        }
+        // if(score) {
+        //     terrain = 0;
+        //
+        // }
 
         vehicle.setBrake(0, 0);
         vehicle.setBrake(0, 1);
@@ -329,8 +360,31 @@ demo.addScene("car",function(){
         }
 
     }
+    createSpikes();
+    function createSpikes() {
+        CylinderColor = 1;
+        for(var i = 0; i <40; i++){
+            treeSide = Math.floor((Math.random() * 2) + 0);
+            var spikeTreeShape = new CANNON.Cylinder(0, -2, 30, 32);
+            var spikeTreeBody = new CANNON.Body({ mass: mass });
+            spikeTreeBody.addShape(spikeTreeShape);
+            spikeTreeBody.position.x = chassisBody.position.x -terrainvalue +Math.floor((Math.random() * -160) + 0);
+            if(treeSide == 0)
+            {
+                spikeTreeBody.position.y = (10)+((Math.random() * 20) + 0) ;
+                spikeTreeBody.position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) + 25);
+            }
+            if(treeSide == 1)
+            {
+                spikeTreeBody.position.y = (-10)+((Math.random() * -20) + 0) ;
+                spikeTreeBody.position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) +25);
+            }
 
-
+            demo.addVisual(spikeTreeBody);
+            SpikeArray.push(spikeTreeBody);
+        }
+        CylinderColor = 0;
+    }
 
 
     function createInitialTrack(){
@@ -382,7 +436,7 @@ demo.addScene("car",function(){
                 makeFuel = true;
             }
         }
-        randomTrack = Math.floor((Math.random() * 5));
+        randomTrack = Math.floor((Math.random() * 9));
          //randomTrack = 4;
         randomPoints.reverse();
 
@@ -427,6 +481,33 @@ demo.addScene("car",function(){
                         case 4://cos, hobbelig
                             height = 1.1* Math.cos(i * 0.08)+ (Math.random()/3) + randomPoints[49] + 21;
                             point = height - 18.2;
+                            lastHeight = height;
+                            lastHeight2 = height;
+                            break;
+                        case 5://cos
+                            height = -1.1* Math.cos(i * 0.1)+ (Math.random()/13) + randomPoints[49] + 20;
+                            point = height - 21;
+                            lastHeight = height;
+                            lastHeight2 = height;
+                            break;
+                        case 6://cos
+                            height = -1.01* Math.cos(i * 0.15)+ (Math.random()/3) + randomPoints[49] + 20.5;
+                            point = height - 21;
+                            lastHeight = height;
+                            lastHeight2 = height;
+                            break;
+                        case 7://cos
+                            var presetarray = [1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0,1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0,1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0,1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0,1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0];
+                            height = presetarray[i]+ (Math.random()/13) + randomPoints[49] + 19;
+                            point = height - 20;
+                            lastHeight = height;
+                            lastHeight2 = height;
+                            break;
+                        case 8://cos
+                            var presetarray1 = [0,0,0,0,0,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2,-0.2,-0.2,-0.2,-0.2,-0.3,-0.3,-0.3,-0.3,-0.3,-0.4,-0.4,-0.4,-0.4,-0.4,-0.5,-0.5,-0.5,-0.5,-0.5,-0.6,-0.6,-0.6,-0.6,-0.6,-0.7,-0.7,-0.7,-0.7,-0.7,-0.8,-0.8,-0.8,-0.8,-0.8,-0.9,-0.9,-0.9,-0.9,-0.9];
+                            presetarray1.reverse();
+                            height = presetarray1[i]*2+ (Math.random()/13) + randomPoints[49] + 20;
+                            point = height - 22;
                             lastHeight = height;
                             lastHeight2 = height;
                             break;
@@ -480,7 +561,7 @@ document.onkeydown = handler;
 document.onkeyup = handler;
 
 var maxSteerVal = 0.5;
-var maxForce = 300;
+var maxForce = 900;
 var brakeForce = 30;
 
 function restartGame() {
