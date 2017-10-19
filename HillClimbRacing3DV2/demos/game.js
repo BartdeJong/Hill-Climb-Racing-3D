@@ -29,7 +29,7 @@ var treeSide = 0;
 var teller = 0;
 var teller2 = 0;
 var terrain = 0;
-var terrainvalue = 200;
+var terrainvalue = 2040;
 var clock = new THREE.Clock();
 clock.start();
 var delta;
@@ -308,7 +308,7 @@ demo.addScene("car",function(){
             }
             teller2 = 0;
         }
-        if (score > 200)
+        if (score > terrainvalue)
         {
             terrain = 1;
         }
