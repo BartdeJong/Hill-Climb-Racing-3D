@@ -163,9 +163,13 @@ demo.addScene("car",function(){
                 if(BottomTreeArray[i2].position.x > chassisBody.position.x + 30 )
                 {
                     BottomTreeArray[i2].position.x = chassisBody.position.x -160 ;
-                    BottomTreeArray[i2].position.z += chassisBody.position.z - 20;
+                    BottomTreeArray[i2].position.z = chassisBody.position.z - 30;
                     TopTreeArray[i2].position.x = chassisBody.position.x - 160;
-                    TopTreeArray[i2].position.z += chassisBody.position.z - 20;
+                    TopTreeArray[i2].position.z = chassisBody.position.z - 10;
+                    if(BottomTreeArray[i2].position.y < 0){
+                        BottomTreeArray[i2].position.z += 10;
+                        TopTreeArray[i2].position.z += 10;
+                    }
                 }
             }
             if(score > 11) {
