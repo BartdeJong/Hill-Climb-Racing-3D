@@ -442,9 +442,6 @@ CANNON.Demo = function(options){
         bboxMeshCache.hideCached();
     }
 
-    if (!Detector.webgl){
-        Detector.addGetWebGLMessage();
-    }
 
     var SHADOW_MAP_WIDTH = 512;
     var SHADOW_MAP_HEIGHT = 512;
