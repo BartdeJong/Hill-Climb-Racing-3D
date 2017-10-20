@@ -19,8 +19,6 @@ CANNON.Demo = function(options){
     this.changeScene = changeScene;
     this.start = start;
 
-    var sceneFolder;
-
     // Global settings
     var settings = this.settings = {
         stepFrequency: 60,
@@ -187,7 +185,7 @@ CANNON.Demo = function(options){
         }
     }
 
-    var light,carlightl, carlightr, scene, ambient, stats, info;
+    var light,carlightl, carlightr, scene, ambient, info;
 
     function setRenderMode(mode){
         if(renderModes.indexOf(mode) === -1){
@@ -238,9 +236,9 @@ CANNON.Demo = function(options){
         scenes.push(initfunc);
         var idx = scenes.length-1;
         scenePicker[title] = function(){
-            changeScene(idx);
+
         };
-        sceneFolder.add(scenePicker,title);
+
     }
 
     /**
@@ -547,7 +545,6 @@ CANNON.Demo = function(options){
         info.style.top = '10px';
         info.style.width = '100%';
         info.style.textAlign = 'center';
-        info.innerHTML = '<a href="http://github.com/schteppe/cannon.js">cannon.js</a> - javascript 3d physics';
         container.appendChild( info );
 
         document.addEventListener('mousemove',onDocumentMouseMove);
@@ -619,115 +616,11 @@ CANNON.Demo = function(options){
         smoothie.stop();
         smoothieCanvas.style.display = "none";
 
-        // STATS
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
-        stats.domElement.style.zIndex = 100;
-        container.appendChild( stats.domElement );
-
-        if(window.dat!=undefined){
-            gui = new dat.GUI();
-
-            gui.domElement.parentNode.style.zIndex=120;
-
-            // Render mode
-            var rf = gui.addFolder('Rendering');
-            rf.add(settings,'rendermode',{Solid:"solid",Wireframe:"wireframe"}).onChange(function(mode){
-                setRenderMode(mode);
-            });
-            rf.add(settings,'contacts');
-            rf.add(settings,'cm2contact');
-            rf.add(settings,'normals');
-            rf.add(settings,'constraints');
-            rf.add(settings,'axes');
-            rf.add(settings,'particleSize').min(0).max(1).onChange(function(size){
-                for(var i=0; i<visuals.length; i++){
-                    if(bodies[i] instanceof CANNON.Particle)
-                        visuals[i].scale.set(size,size,size);
-                }
-            });
-            rf.add(settings,'shadows').onChange(function(shadows){
-                if(shadows){
-                    renderer.shadowMapAutoUpdate = true;
-                } else {
-                    renderer.shadowMapAutoUpdate = false;
-                    renderer.clearTarget( light.shadowMap );
-                }
-            });
-            rf.add(settings,'aabbs');
-            rf.add(settings,'profiling').onChange(function(profiling){
-                if(profiling){
-                    world.doProfiling = true;
-                    smoothie.start();
-                    smoothieCanvas.style.display = "block";
-                } else {
-                    world.doProfiling = false;
-                    smoothie.stop();
-                    smoothieCanvas.style.display = "none";
-                }
-
-            });
-
-            // World folder
-            var wf = gui.addFolder('World');
-            // Pause
-            wf.add(settings, 'paused').onChange(function(p){
-                /*if(p){
-                 smoothie.stop();
-                 } else {
-                 smoothie.start();
-                 }*/
-            });
-            wf.add(settings, 'stepFrequency',60,60*10).step(60);
-            var maxg = 100;
-            wf.add(settings, 'gx',-maxg,maxg).onChange(function(gx){
-                if(!isNaN(gx)){
-                    world.gravity.set(gx,settings.gy,settings.gz);
-                }
-            });
-            wf.add(settings, 'gy',-maxg,maxg).onChange(function(gy){
-                if(!isNaN(gy))
-                    world.gravity.set(settings.gx,gy,settings.gz);
-            });
-            wf.add(settings, 'gz',-maxg,maxg).onChange(function(gz){
-                if(!isNaN(gz))
-                    world.gravity.set(settings.gx,settings.gy,gz);
-            });
-            wf.add(settings, 'quatNormalizeSkip',0,50).step(1).onChange(function(skip){
-                if(!isNaN(skip)){
-                    world.quatNormalizeSkip = skip;
-                }
-            });
-            wf.add(settings, 'quatNormalizeFast').onChange(function(fast){
-                world.quatNormalizeFast = !!fast;
-            });
-
-            // Solver folder
-            var sf = gui.addFolder('Solver');
-            sf.add(settings, 'iterations',1,50).step(1).onChange(function(it){
-                world.solver.iterations = it;
-            });
-            sf.add(settings, 'k',10,10000000).onChange(function(k){
-                that.setGlobalSpookParams(settings.k,settings.d,1/settings.stepFrequency);
-            });
-            sf.add(settings, 'd',0,20).step(0.1).onChange(function(d){
-                that.setGlobalSpookParams(settings.k,settings.d,1/settings.stepFrequency);
-            });
-            sf.add(settings, 'tolerance',0.0,10.0).step(0.01).onChange(function(t){
-                world.solver.tolerance = t;
-            });
-
-            // Scene picker
-            sceneFolder = gui.addFolder('Scenes');
-            sceneFolder.open();
-        }
-
         // Trackball controls
         controls = new THREE.TrackballControls( camera, renderer.domElement );
-        controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.2;
+        controls.rotateSpeed = 0;
+        controls.zoomSpeed = 0;
+        controls.panSpeed = 0;
         controls.noZoom = false;
         controls.noPan = false;
         controls.staticMoving = false;
@@ -779,7 +672,6 @@ CANNON.Demo = function(options){
             }
         }
 
-        console.log(positieX);
         function rgb(r, g, b){
             return "rgb("+r+","+g+","+b+")";
         }
@@ -800,7 +692,6 @@ CANNON.Demo = function(options){
         carlightr.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
         ambient.position.x = positieX;
         render();
-        stats.update();
     }
 
     var lastCallTime = 0;
@@ -866,15 +757,6 @@ CANNON.Demo = function(options){
                     restartCurrentScene();
                     break;
 
-                case 104: // h - toggle widgets
-                    if(stats.domElement.style.display=="none"){
-                        stats.domElement.style.display = "block";
-                        info.style.display = "block";
-                    } else {
-                        stats.domElement.style.display = "none";
-                        info.style.display = "none";
-                    }
-                    break;
 
                 case 97: // a - AABBs
                     settings.aabbs = !settings.aabbs;
@@ -895,14 +777,6 @@ CANNON.Demo = function(options){
                     var timeStep = 1 / settings.stepFrequency;
                     world.step(timeStep);
                     updateVisuals();
-                    break;
-
-                case 109: // m - toggle materials
-                    var idx = renderModes.indexOf(settings.rendermode);
-                    idx++;
-                    idx = idx % renderModes.length; // begin at 0 if we exceeded number of modes
-                    setRenderMode(renderModes[idx]);
-                    updategui();
                     break;
 
                 case 49:
