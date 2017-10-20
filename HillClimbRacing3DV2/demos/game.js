@@ -133,7 +133,7 @@ demo.addScene("car",function(){
     // Update wheels
     world.addEventListener('postStep', function(){
         delta  += clock.getDelta();
-        soundSpeed = -chassisBody.velocity.x / 10;
+        soundSpeed = -chassisBody.velocity.x / 30;
         for (var i = 0; i < vehicle.wheelInfos.length; i++) {
             vehicle.updateWheelTransform(i);
             var t = vehicle.wheelInfos[i].worldTransform;

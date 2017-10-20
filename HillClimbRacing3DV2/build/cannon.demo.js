@@ -655,11 +655,11 @@ CANNON.Demo = function(options){
 
     function animate(){
         requestAnimationFrame( animate );
-        if(soundSpeed < 1) {
+        if(soundSpeed < 0) {
             sound.setPlaybackRate(1);
         }
         else{
-            sound.setPlaybackRate(soundSpeed);
+            sound.setPlaybackRate(soundSpeed + 1);
         }
         var snelheid = 2;
         var Red = 0;
@@ -716,9 +716,12 @@ CANNON.Demo = function(options){
         var targetObject = new THREE.Object3D();
         scene.add(targetObject);
         targetObject.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+        var targetObject1 = new THREE.Object3D();
+        scene.add(targetObject1);
+        targetObject1.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
 
         carlightl.target = targetObject;
-        carlightr.target = targetObject;
+        carlightr.target = targetObject1;
 
         // carlightl.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
         // carlightr.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
