@@ -169,7 +169,10 @@ CANNON.Demo = function(options){
 
     function updategui(){
         light.position.x = positieX;
-        light.target.position.set(positieX,0,0);
+        var targetObject = new THREE.Object3D();
+        scene.add(targetObject);
+        targetObject.position.set(positieX,0,0);
+        light.target = targetObject;
         if(gui){
             // First level
             for (var i in gui.__controllers){
@@ -503,9 +506,9 @@ CANNON.Demo = function(options){
         light.shadowMapHeight = SHADOW_MAP_HEIGHT;
         carlightr.castShadow = true;
 
-        carlightr.shadowCameraNear = 10;
+        carlightr.shadowCameraNear = 1;
         carlightr.shadowCameraFar = 100;//camera.far;
-        carlightr.shadowCameraFov = 30;
+        carlightr.shadowCameraFov = 50;
 
         carlightr.shadowMapBias = 0.0039;
         carlightr.shadowMapDarkness = 0.5;
@@ -514,17 +517,17 @@ CANNON.Demo = function(options){
 
         carlightl.castShadow = true;
 
-        carlightl.shadowCameraNear = 10;
+        carlightl.shadowCameraNear = 1;
         carlightl.shadowCameraFar = 100;//camera.far;
-        carlightl.shadowCameraFov = 30;
+        carlightl.shadowCameraFov = 50;
 
         carlightl.shadowMapBias = 0.0039;
         carlightl.shadowMapDarkness = 0.5;
         carlightl.shadowMapWidth = SHADOW_MAP_WIDTH;
         carlightl.shadowMapHeight = SHADOW_MAP_HEIGHT;
         light.intensity = 0.8;
-        carlightr.instensity = 10;
-        carlightl.instensity = 10;
+        carlightr.instensity = 0.2;
+        carlightl.instensity = 0.2;
 
         //light.shadowCameraVisible = true;
         scene.add(carlightr);
@@ -631,13 +634,30 @@ CANNON.Demo = function(options){
         //controls.keys = [ 65, 83, 68 ]; // [ rotateKey, zoomKey, panKey ]
         controls.screen.width = SCREEN_WIDTH;
         controls.screen.height = SCREEN_HEIGHT;
+
+        //Create an AudioListener and add it to the camera
+        var listener = new THREE.AudioListener();
+        camera.add( listener );
+
+        // create a global audio source
+        var sound = new THREE.Audio( listener );
+
+        var audioLoader = new THREE.AudioLoader();
+
+        //Load a sound and set it as the Audio object's buffer
+        audioLoader.load( "../sounds/engine.wav", function( buffer ) {
+            sound.setBuffer( buffer );
+            sound.setLoop(true);
+            sound.setVolume(0.5);
+            sound.play();
+        });
     }
 
     var t = 0, newTime, delta;
 
     function animate(){
         requestAnimationFrame( animate );
-        var snelheid = 2;
+        var snelheid = 0.1;
         var Red = 0;
         var Green = 0;
         var Blue = 0;
@@ -688,8 +708,23 @@ CANNON.Demo = function(options){
         carlightr.position.z =(wheelposZ - positieZwheel)*-1.1 + positieZ;
         carlightl.position.y = -1;
         carlightr.position.y = 1;
-        carlightl.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
-        carlightr.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+
+        var targetObject = new THREE.Object3D();
+        scene.add(targetObject);
+        targetObject.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+
+        carlightl.target = targetObject;
+        carlightr.target = targetObject;
+
+        // carlightl.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
+        // carlightr.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
+        // carlightl.target.position.z = (wheelposZ - positieZwheel)*-2.1 + positieZ;
+        // carlightr.target.position.z =(wheelposZ - positieZwheel)*-2.1 + positieZ;
+        // carlightl.target.position.y = -1;
+        // carlightr.target.position.y = 1;
+        //
+        // carlightl.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+        // carlightr.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
         ambient.position.x = positieX;
         render();
     }
