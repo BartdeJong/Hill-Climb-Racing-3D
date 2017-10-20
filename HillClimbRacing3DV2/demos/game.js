@@ -29,7 +29,7 @@ var treeSide = 0;
 var teller = 0;
 var teller2 = 0;
 var terrain = 0;
-var terrainvalue = 2040;
+var terrainvalue = 200;
 var clock = new THREE.Clock();
 clock.start();
 var delta;
@@ -184,9 +184,9 @@ demo.addScene("car",function(){
                 {
                     if(SpikeArray[i3].position.x > chassisBody.position.x +30) {
                         SpikeArray[i3].position.x = chassisBody.position.x - 160;
-                        SpikeArray[i3].position.z = chassisBody.position.z - 10;
+                        SpikeArray[i3].position.z = chassisBody.position.z - 20;
                         if (SpikeArray[i3].position.y < 0) {
-                            SpikeArray[i3].position.z += 10;
+                            SpikeArray[i3].position.z += 5;
 
                         }
                     }
@@ -365,19 +365,19 @@ demo.addScene("car",function(){
         CylinderColor = 1;
         for(var i = 0; i <40; i++){
             treeSide = Math.floor((Math.random() * 2) + 0);
-            var spikeTreeShape = new CANNON.Cylinder(0, -2, 30, 32);
+            var spikeTreeShape = new CANNON.Cylinder(0, -2, 65, 32);
             var spikeTreeBody = new CANNON.Body({ mass: mass });
             spikeTreeBody.addShape(spikeTreeShape);
             spikeTreeBody.position.x = chassisBody.position.x -terrainvalue +Math.floor((Math.random() * -160) + 0);
             if(treeSide == 0)
             {
                 spikeTreeBody.position.y = (10)+((Math.random() * 20) + 0) ;
-                spikeTreeBody.position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) + 25);
+                spikeTreeBody.position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) + 5);
             }
             if(treeSide == 1)
             {
                 spikeTreeBody.position.y = (-10)+((Math.random() * -20) + 0) ;
-                spikeTreeBody.position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) +25);
+                spikeTreeBody.position.z = (chassisBody.position.z - 40) +Math.floor((Math.random() * 10) +5);
             }
 
             demo.addVisual(spikeTreeBody);
