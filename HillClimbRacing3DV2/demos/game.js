@@ -33,6 +33,7 @@ var terrainvalue = 200;
 var clock = new THREE.Clock();
 clock.start();
 var delta;
+var soundSpeed = 1;
 
 
 var fuelArray = [];
@@ -132,6 +133,7 @@ demo.addScene("car",function(){
     // Update wheels
     world.addEventListener('postStep', function(){
         delta  += clock.getDelta();
+        soundSpeed = -chassisBody.velocity.x / 10;
         for (var i = 0; i < vehicle.wheelInfos.length; i++) {
             vehicle.updateWheelTransform(i);
             var t = vehicle.wheelInfos[i].worldTransform;

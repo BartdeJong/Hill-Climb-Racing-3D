@@ -9,7 +9,7 @@ CANNON = CANNON || {};
  * @param {Object} options
  */
 CANNON.Demo = function(options){
-
+    var sound;
     var that = this;
     var lichtTeller = 0;
     var lichtUit = 0;
@@ -640,7 +640,7 @@ CANNON.Demo = function(options){
         camera.add( listener );
 
         // create a global audio source
-        var sound = new THREE.Audio( listener );
+        sound = new THREE.Audio( listener );
 
         var audioLoader = new THREE.AudioLoader();
 
@@ -650,6 +650,7 @@ CANNON.Demo = function(options){
             sound.setLoop(true);
             sound.setVolume(0.5);
             sound.play();
+            sound.hasPlaybackControl = true;
         });
     }
 
@@ -657,7 +658,13 @@ CANNON.Demo = function(options){
 
     function animate(){
         requestAnimationFrame( animate );
-        var snelheid = 0.1;
+        if(soundSpeed < 1) {
+            sound.setPlaybackRate(1);
+        }
+        else{
+            sound.setPlaybackRate(soundSpeed);
+        }
+        var snelheid = 2;
         var Red = 0;
         var Green = 0;
         var Blue = 0;
