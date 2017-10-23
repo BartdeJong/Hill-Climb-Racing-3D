@@ -29,7 +29,7 @@ var treeSide = 0;
 var teller = 0;
 var teller2 = 0;
 var terrain = 0;
-var terrainvalue = 200;
+var terrainvalue = 1020;
 var clock = new THREE.Clock();
 clock.start();
 var delta;
@@ -198,10 +198,10 @@ demo.addScene("car",function(){
             if(score > 11) {
                 if (chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1 && wheelBodies[0].position.x < wheelBodies[2].position.x || fuel <= 0 && chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1) {
                     if(delta > 1) {
-                        // alert("af");
                         $("#highscore").text(Math.round(score - 10));
                         $("#gameover").fadeIn(1000);
                         gameOver = true;
+                        // chassisBody.quaternion.y = 0;
                     }
                 }
                 else{
@@ -438,7 +438,7 @@ demo.addScene("car",function(){
                 makeFuel = true;
             }
         }
-        randomTrack = Math.floor((Math.random() * 9));
+        randomTrack = Math.floor((Math.random() * 5));
          //randomTrack = 4;
         randomPoints.reverse();
 
@@ -641,6 +641,10 @@ function handler(event){
 
         case 82:
             restartGame();
+            break;
+
+        case 79:
+            vehicle.chassisBody.quaternion.y = 0;
             break;
 //            case 39: // right
 //                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 0);

@@ -10,6 +10,8 @@ CANNON = CANNON || {};
  */
 CANNON.Demo = function(options){
     var sound;
+    var happyMusic;
+    var scaryMusic;
     var that = this;
     var lichtTeller = 0;
     var lichtUit = 0;
@@ -638,6 +640,8 @@ CANNON.Demo = function(options){
 
         // create a global audio source
         sound = new THREE.Audio( listener );
+        happyMusic = new THREE.Audio( listener );
+        scaryMusic = new THREE.Audio( listener );
 
         var audioLoader = new THREE.AudioLoader();
 
@@ -645,9 +649,25 @@ CANNON.Demo = function(options){
         audioLoader.load( "../sounds/engine.wav", function( buffer ) {
             sound.setBuffer( buffer );
             sound.setLoop(true);
-            sound.setVolume(0.5);
+            sound.setVolume(1);
             sound.play();
             sound.hasPlaybackControl = true;
+        });
+
+        audioLoader.load( "../sounds/happy.wav", function( buffer ) {
+            happyMusic.setBuffer( buffer );
+            happyMusic.setLoop(true);
+            happyMusic.setVolume(0.15);
+            happyMusic.play();
+            happyMusic.hasPlaybackControl = true;
+        });
+
+        audioLoader.load( "../sounds/scary.wav", function( buffer ) {
+            scaryMusic.setBuffer( buffer );
+            scaryMusic.setLoop(true);
+            scaryMusic.setVolume(0);
+            scaryMusic.play();
+            scaryMusic.hasPlaybackControl = true;
         });
     }
 
@@ -661,26 +681,36 @@ CANNON.Demo = function(options){
         else{
             sound.setPlaybackRate(soundSpeed + 1);
         }
-        var snelheid = 2;
+        var snelheid = 1;
+        var scaryStart = - 500;
+        var positieX2 = positieX - scaryStart;
         var Red = 0;
         var Green = 0;
         var Blue = 0;
-        if(positieX > -255 * snelheid) {
-            Green = Math.round(255 + positieX / snelheid);
-            Blue = Math.round(255 + positieX / snelheid);
+        if(positieX2 > 0){
+            happyMusic.setVolume(0.15);
+            scaryMusic.setVolume(0);
+        }
+        if(positieX2 > -255 * snelheid) {
+            Green = Math.round(255 + positieX2 / snelheid);
+            Blue = Math.round(255 + positieX2 / snelheid);
             Red = 255;
             light.intensity = 0.8;
+            happyMusic.setVolume(0.15);
+            scaryMusic.setVolume(0);
         }
-        if(positieX <= -255 * snelheid && positieX > -510 * snelheid){
-            Red = 255 + Math.round(positieX / snelheid) + 255;
+        if(positieX2 <= -255 * snelheid && positieX2 > -510 * snelheid){
+            Red = 255 + Math.round(positieX2 / snelheid) + 255;
+            happyMusic.setVolume(0.15 + 0.15 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)));
+            scaryMusic.setVolume(0 - 5 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)))
         }
-        if(positieX <= -400 * snelheid){
+        if(positieX2 <= -400 * snelheid){
             $("#scores").css( { 'color': 'white' } );
         }
-        if(positieX <= -510 * snelheid && positieX > -765 * snelheid){
-            light.intensity = 0.8 + (0.7 * (positieX / snelheid + 510) / 255);
+        if(positieX2 <= -510 * snelheid && positieX2 > -765 * snelheid){
+            light.intensity = 0.8 + (0.7 * (positieX2 / snelheid + 510) / 255);
         }
-        if(positieX <= -765 * snelheid){
+        if(positieX2 <= -765 * snelheid){
             lichtTeller++;
             if(lichtTeller > lichtUit - 10) {
                 carlightl.intensity = 0;
