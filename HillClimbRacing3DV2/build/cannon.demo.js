@@ -445,8 +445,8 @@ CANNON.Demo = function(options){
     }
 
 
-    var SHADOW_MAP_WIDTH = 512;
-    var SHADOW_MAP_HEIGHT = 512;
+    var SHADOW_MAP_WIDTH = 1024;
+    var SHADOW_MAP_HEIGHT = 1024;
     var MARGIN = 0;
     var SCREEN_WIDTH = window.innerWidth;
     var SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
@@ -478,8 +478,8 @@ CANNON.Demo = function(options){
         scene = that.scene = new THREE.Scene();
         scene.fog = new THREE.Fog( 0xffffff, 80, FAR );
         //
-        carlightr = new THREE.SpotLight( 0xdeb039 );
-        carlightl = new THREE.SpotLight( 0xdeb039 );
+        carlightr = new THREE.SpotLight( 0xdeb039, 0.8, 20 );
+        carlightl = new THREE.SpotLight( 0xdeb039, 0.8, 20 );
         carlightr.position.set( positieX, 0, -1.1 );
         carlightr.target.position.set( positieX, 0, 0 );
 
@@ -489,27 +489,27 @@ CANNON.Demo = function(options){
         scene.add( ambient );
         ambient.intensity = 1;
 
-        light = new THREE.SpotLight( 0xffffff );
+        light = new THREE.SpotLight( 0xffffff, 0.8, 500 );
         light.position.set( positieX, 30, 80 );
         light.target.position.set( positieX, 0, 0 );
 
         light.castShadow = true;
 
-        light.shadowCameraNear = 10;
-        light.shadowCameraFar = 100;//camera.far;
+        light.shadowCameraNear = 1;
+        light.shadowCameraFar = 500;//camera.far;
         light.shadowCameraFov = 30;
 
-        light.shadowMapBias = 0.0039;
+        // light.shadowMapBias = 0.0039;
         light.shadowMapDarkness = 0.5;
         light.shadowMapWidth = SHADOW_MAP_WIDTH;
         light.shadowMapHeight = SHADOW_MAP_HEIGHT;
         carlightr.castShadow = true;
 
         carlightr.shadowCameraNear = 1;
-        carlightr.shadowCameraFar = 100;//camera.far;
+        carlightr.shadowCameraFar = 500;//camera.far;
         carlightr.shadowCameraFov = 50;
 
-        carlightr.shadowMapBias = 0.0039;
+        // carlightr.shadowMapBias = 0.0039;
         carlightr.shadowMapDarkness = 0.5;
         carlightr.shadowMapWidth = SHADOW_MAP_WIDTH;
         carlightr.shadowMapHeight = SHADOW_MAP_HEIGHT;
@@ -517,16 +517,16 @@ CANNON.Demo = function(options){
         carlightl.castShadow = true;
 
         carlightl.shadowCameraNear = 1;
-        carlightl.shadowCameraFar = 100;//camera.far;
+        carlightl.shadowCameraFar = 500;//camera.far;
         carlightl.shadowCameraFov = 50;
 
-        carlightl.shadowMapBias = 0.0039;
+        // carlightl.shadowMapBias = 0.0039;
         carlightl.shadowMapDarkness = 0.5;
         carlightl.shadowMapWidth = SHADOW_MAP_WIDTH;
         carlightl.shadowMapHeight = SHADOW_MAP_HEIGHT;
-        light.intensity = 0.8;
-        carlightr.instensity = 0.2;
-        carlightl.instensity = 0.2;
+        // light.intensity = 0.8;
+        // carlightr.instensity = 0.2;
+        // carlightl.instensity = 0.2;
 
         //light.shadowCameraVisible = true;
         scene.add(carlightr);
@@ -557,6 +557,7 @@ CANNON.Demo = function(options){
 
         renderer.shadowMapEnabled = true;
         renderer.shadowMapSoft = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         // Smoothie
         smoothieCanvas = document.createElement("canvas");
