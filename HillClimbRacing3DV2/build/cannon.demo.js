@@ -708,6 +708,9 @@ CANNON.Demo = function(options){
         if(positieX2 <= -400 * snelheid){
             $("#scores").css( { 'color': 'white' } );
         }
+        else{
+            $("#scores").css( { 'color': 'black' } );
+        }
         if(positieX2 <= -510 * snelheid && positieX2 > -765 * snelheid){
             light.intensity = 0.8 + (0.7 * (positieX2 / snelheid + 510) / 255);
         }

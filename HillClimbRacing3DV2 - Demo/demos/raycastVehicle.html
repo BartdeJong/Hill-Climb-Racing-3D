@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>cannon.js - RaycastVehicle</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        #scores {
+            font-size: 25pt;
+            color: black;
+            position: absolute;
+            font-family: Rockwell, sans-serif;
+            z-index: 50;
+        }
+
+        body{
+            margin: 0px;
+            overflow: hidden;
+        }
+        #gameover {
+            background-color: rgba(255, 0, 0, 0.5);
+            width:100vw;
+            height:100%;
+            font-size:40pt;
+            text-align:center;
+            line-height: 15vh;
+            vertical-align: middle;
+            position:absolute;
+            display:none;
+            font-family: Rockwell, sans-serif;
+            z-index: 100;
+        }
+
+
+    </style>
+
+</head>
+<body>
+<div id="scores">
+    <span id="Fuel">Fuel: <span id="totalfuel">0</span></span></br>
+    <span id="Score">Score: <span id="totalhighscore">0</span></span></br>
+</div>
+<div id="gameover">
+    <h1><span id="winner"></span> Gameover!</h1>
+    <h2>Your Highscore: <span id="highscore">Test Score 420</span></h2>
+
+
+</div>
+<script src="../build/cannon.js"></script>
+<script src="../build/cannon.demo.js"></script>
+<script src="../libs/Three.js"></script>
+<script src="../libs/TrackballControls.js"></script>
+<script src="../libs/jquery-3.2.1.min.js"></script>
+<script src="../libs/smoothie.js"></script>
+<script src="../demos/game.js"></script>
+</body>
+</html>

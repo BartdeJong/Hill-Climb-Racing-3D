@@ -208,6 +208,11 @@ demo.addScene("car",function(){
                     delta = 0;
                 }
             }
+            if(chassisBody.velocity.z < -30){
+                $("#highscore").text(Math.round(score - 10));
+                $("#gameover").fadeIn(1000);
+                gameOver = true;
+            }
             if(restartAlles){
                 last = 0;
                 segments = 0;
