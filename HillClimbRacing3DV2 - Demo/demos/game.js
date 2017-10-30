@@ -133,7 +133,10 @@ demo.addScene("car",function(){
     // Update wheels
     world.addEventListener('postStep', function(){
         if(chassisBody.velocity.z < -30){
-            restartAlles = true;
+            location.reload();
+        }
+        if(chassisBody.position.x < -2010){
+            location.reload();
         }
         delta  += clock.getDelta();
         soundSpeed = -chassisBody.velocity.x / 30;
@@ -142,6 +145,7 @@ demo.addScene("car",function(){
             var t = vehicle.wheelInfos[i].worldTransform;
             wheelBodies[i].position.copy(t.position);
             wheelBodies[i].quaternion.copy(t.quaternion);
+        }
             positieX = chassisBody.position.x;
             positieXwheel = (wheelBodies[0].position.x + wheelBodies[2].position.x) / 2;
             positieZwheel = (wheelBodies[0].position.z + wheelBodies[2].position.z) / 2;
@@ -266,7 +270,7 @@ demo.addScene("car",function(){
                 $("#gameover").fadeOut(1000);
                 gameOver = false;
             }
-        }
+
         if(-(positieX / 49) + 6 > segments){
             segments++;
             createNewTrack()
