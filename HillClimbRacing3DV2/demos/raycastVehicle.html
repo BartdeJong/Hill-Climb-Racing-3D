@@ -31,8 +31,19 @@
             font-family: Rockwell, sans-serif;
             z-index: 100;
         }
-
-
+        #startGame {
+            background-color: rgba(255, 255, 255, 0.5);
+            width:100vw;
+            height:100vh;
+            font-size:40pt;
+            text-align:center;
+            line-height: 12.5vh;
+            vertical-align: middle;
+            position:absolute;
+            display:none;
+            z-index: 200;
+            font-family: 'Roboto', sans-serif;
+        }
     </style>
 
 </head>
@@ -44,9 +55,18 @@
 <div id="gameover">
     <h1><span id="winner"></span> Gameover!</h1>
     <h2>Your Highscore: <span id="highscore">Test Score 420</span></h2>
-
-
 </div>
+<div id="startGame">
+    <h1>Hill climb racing 3D</h1>
+    <h4>Controlls:</h4>
+    <p>Arrow left = Reverse </p>
+    <p>Arrow right = Drive forward</p>
+    <p> B = Brake </p>
+    <p> R = Restart </p>
+    <p> P = Pause </p>
+    <p> Press one of the arrowkeys to start the game </p>
+</div>
+
 <script src="../build/cannon.js"></script>
 <script src="../build/cannon.demo.js"></script>
 <script src="../libs/Three.js"></script>
@@ -54,5 +74,6 @@
 <script src="../libs/jquery-3.2.1.min.js"></script>
 <script src="../libs/smoothie.js"></script>
 <script src="../demos/game.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </body>
 </html>
