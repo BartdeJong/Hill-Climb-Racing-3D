@@ -15,6 +15,7 @@ CANNON.Demo = function(options){
     var that = this;
     var lichtTeller = 0;
     var lichtUit = 0;
+    var teller60 = 0;
     // API
     this.addScene = addScene;
     this.restartCurrentScene = restartCurrentScene;
@@ -682,91 +683,104 @@ CANNON.Demo = function(options){
         else{
             sound.setPlaybackRate(soundSpeed + 1);
         }
-        var snelheid = 1;
-        var scaryStart = - 500;
-        var positieX2 = positieX - scaryStart;
-        var Red = 0;
-        var Green = 0;
-        var Blue = 0;
-        if(positieX2 > 0){
-            happyMusic.setVolume(0.15);
-            scaryMusic.setVolume(0);
-        }
-        if(positieX2 > -255 * snelheid) {
-            Green = Math.round(255 + positieX2 / snelheid);
-            Blue = Math.round(255 + positieX2 / snelheid);
-            Red = 255;
-            light.intensity = 0.8;
-            happyMusic.setVolume(0.15);
-            scaryMusic.setVolume(0);
-        }
-        if(positieX2 <= -255 * snelheid && positieX2 > -510 * snelheid){
-            Red = 255 + Math.round(positieX2 / snelheid) + 255;
-            happyMusic.setVolume(0.15 + 0.15 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)));
-            scaryMusic.setVolume(0 - 5 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)))
-        }
-        if(positieX2 <= -400 * snelheid){
-            $("#scores").css( { 'color': 'white' } );
-        }
-        else{
-            $("#scores").css( { 'color': 'black' } );
-        }
-        if(positieX2 <= -510 * snelheid && positieX2 > -765 * snelheid){
-            light.intensity = 0.8 + (0.7 * (positieX2 / snelheid + 510) / 255);
-        }
-        if(positieX2 <= -765 * snelheid){
-            lichtTeller++;
-            if(lichtTeller > lichtUit - 10) {
-                carlightl.intensity = 0;
-                carlightr.intensity = 0;
+        teller60++;
+        if(teller60 > 10) {
+            teller60 = 0;
+            var snelheid = 1;
+            var scaryStart = -500;
+            var positieX2 = positieX - scaryStart;
+            var Red = 0;
+            var Green = 0;
+            var Blue = 0;
+            if (positieX2 > 0) {
+                happyMusic.setVolume(0.15);
+                scaryMusic.setVolume(0);
             }
-            else{
-                carlightl.intensity = 1;
-                carlightr.intensity = 1;
+            if (positieX2 > -255 * snelheid) {
+                Green = Math.round(255 + positieX2 / snelheid);
+                Blue = Math.round(255 + positieX2 / snelheid);
+                Red = 255;
+                light.intensity = 0.8;
+                happyMusic.setVolume(0.15);
+                scaryMusic.setVolume(0);
             }
-            if(lichtTeller > lichtUit){
-                lichtTeller = 0;
-                lichtUit = Math.random() * 100;
+            if (positieX2 <= -255 * snelheid && positieX2 > -510 * snelheid) {
+                Red = 255 + Math.round(positieX2 / snelheid) + 255;
+                happyMusic.setVolume(0.15 + 0.15 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)));
+                scaryMusic.setVolume(0 - 5 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)))
             }
+            if (positieX2 <= -400 * snelheid) {
+                $("#scores").css({'color': 'white'});
+            }
+            else {
+                $("#scores").css({'color': 'black'});
+            }
+            if (positieX2 <= -510 * snelheid && positieX2 > -765 * snelheid) {
+                light.intensity = 0.8 + (0.7 * (positieX2 / snelheid + 510) / 255);
+            }
+            if (positieX2 <= -765 * snelheid) {
+                lichtTeller++;
+                if (lichtTeller > lichtUit - 1) {
+                    carlightl.intensity = 0;
+                    carlightr.intensity = 0;
+                }
+                else {
+                    carlightl.intensity = 1;
+                    carlightr.intensity = 1;
+                }
+                if (lichtTeller > lichtUit) {
+                    lichtTeller = 0;
+                    lichtUit = Math.random() * 10;
+                }
+            }
+
+            function rgb(r, g, b) {
+                return "rgb(" + r + "," + g + "," + b + ")";
+            }
+
+            scene.fog.color.set(rgb(Red, Green, Blue));
+            renderer.setClearColor(scene.fog.color, 1);
+
+            light.position.x = positieX;
+
+
+
+
+
+            // carlightl.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
+            // carlightr.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
+            // carlightl.target.position.z = (wheelposZ - positieZwheel)*-2.1 + positieZ;
+            // carlightr.target.position.z =(wheelposZ - positieZwheel)*-2.1 + positieZ;
+            // carlightl.target.position.y = -1;
+            // carlightr.target.position.y = 1;
+            //
+            // carlightl.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+            // carlightr.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+            ambient.position.x = positieX;
         }
 
-        function rgb(r, g, b){
-            return "rgb("+r+","+g+","+b+")";
-        }
-        scene.fog.color.set(rgb(Red, Green, Blue));
-        renderer.setClearColor( scene.fog.color, 1 );
-        if(!settings.paused){
-            updateVisuals();
-            updatePhysics();
-        }
-        light.position.x = positieX;
-        carlightl.position.x = ((wheelposX - positieXwheel)*-1.1) + positieX;
-        carlightr.position.x = ((wheelposX - positieXwheel)*-1.1) + positieX;
-        carlightl.position.z = (wheelposZ - positieZwheel)*-1.1 + positieZ;
-        carlightr.position.z =(wheelposZ - positieZwheel)*-1.1 + positieZ;
+
+        carlightl.position.x = ((wheelposX - positieXwheel) * -1.1) + positieX;
+        carlightr.position.x = ((wheelposX - positieXwheel) * -1.1) + positieX;
+        carlightl.position.z = (wheelposZ - positieZwheel) * -1.1 + positieZ;
+        carlightr.position.z = (wheelposZ - positieZwheel) * -1.1 + positieZ;
         carlightl.position.y = -1;
         carlightr.position.y = 1;
 
         var targetObject = new THREE.Object3D();
         scene.add(targetObject);
-        targetObject.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+        targetObject.position.set(((wheelposX - positieXwheel) * -2.1) + positieXwheel, -1, (wheelposZ - positieZwheel) * -2.1 + positieZwheel);
         var targetObject1 = new THREE.Object3D();
         scene.add(targetObject1);
-        targetObject1.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
+        targetObject1.position.set(((wheelposX - positieXwheel) * -2.1) + positieXwheel, 1, (wheelposZ - positieZwheel) * -2.1 + positieZwheel);
 
         carlightl.target = targetObject;
         carlightr.target = targetObject1;
 
-        // carlightl.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
-        // carlightr.target.position.x = ((wheelposX - positieXwheel)*-2.1) + positieX;
-        // carlightl.target.position.z = (wheelposZ - positieZwheel)*-2.1 + positieZ;
-        // carlightr.target.position.z =(wheelposZ - positieZwheel)*-2.1 + positieZ;
-        // carlightl.target.position.y = -1;
-        // carlightr.target.position.y = 1;
-        //
-        // carlightl.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,-1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
-        // carlightr.target.position.set(((wheelposX - positieXwheel)* -2.1) + positieXwheel,1,(wheelposZ - positieZwheel)*-2.1 + positieZwheel);
-        ambient.position.x = positieX;
+        if (!settings.paused) {
+            updateVisuals();
+            updatePhysics();
+        }
         render();
     }
 

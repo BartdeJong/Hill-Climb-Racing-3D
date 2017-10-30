@@ -1,5 +1,5 @@
 var demo = new CANNON.Demo();
-var mass = 150;
+var mass = 10;
 var vehicle;
 var positieX = 0;
 var positieZ = 0;
@@ -77,7 +77,7 @@ demo.addScene("car",function(){
     var options = {
         radius: 0.5,
         directionLocal: new CANNON.Vec3(0, 0, -1),
-        suspensionStiffness: 35,
+        suspensionStiffness: 20,
         suspensionRestLength: 0.3,
         frictionSlip: 5,
         dampingRelaxation: 10,
@@ -122,7 +122,7 @@ demo.addScene("car",function(){
     for(var i=0; i<vehicle.wheelInfos.length; i++){
         var wheel = vehicle.wheelInfos[i];
         var cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 1.5, 20);
-        var wheelBody = new CANNON.Body({ mass: 100 });
+        var wheelBody = new CANNON.Body({ mass: 1 });
         var q = new CANNON.Quaternion();
         q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
         wheelBody.addShape(cylinderShape, new CANNON.Vec3(), q);
@@ -272,10 +272,10 @@ demo.addScene("car",function(){
             createNewTrack()
         }
 
-        vehicle.applyEngineForce(300, 0);
-        vehicle.applyEngineForce(300, 1);
-        vehicle.applyEngineForce(300, 2);
-        vehicle.applyEngineForce(300, 3);
+        vehicle.applyEngineForce(30, 0);
+        vehicle.applyEngineForce(30, 1);
+        vehicle.applyEngineForce(30, 2);
+        vehicle.applyEngineForce(30, 3);
 
 
         if(endpoint > wheelBodies[3].position.x + 30)
@@ -304,9 +304,9 @@ demo.addScene("car",function(){
             dommeblokjes.push(wallBody2);
 
             if (dommeblokjes.length > 15) {
-                world.remove(dommeblokjes[teller]);
-                demo.removeVisual(dommeblokjes[teller]);
-                teller++;
+                world.remove(dommeblokjes[0]);
+                demo.removeVisual(dommeblokjes[0]);
+                dommeblokjes.splice(0, 1);
             }
             for (var i = 0; i < dommeblokjes.length; i++) {
                 dommeblokjes[i].position.x += 0.1;
@@ -428,7 +428,7 @@ demo.addScene("car",function(){
         var lastHeight2;
 
         var randomPoints = [];
-        var yUp = 0.2 * (Math.random() - 0.5);
+        var yUp = 0.1 * (Math.random());
         for (var i = 0; i < sizeX; i++) {
             if (i != 0) {
                 point = randomPoints[i - 1] + THREE.Math.randFloat(-0.1, 0.1) + yUp;
@@ -437,12 +437,12 @@ demo.addScene("car",function(){
             fuelCounter++;
             if(fuelCounter >= nextFuel){
                 fuelCounter = 0;
-                nextFuel += 200;
+                nextFuel += 50;
                 makeFuel = true;
             }
         }
-        randomTrack = Math.floor((Math.random() * 5));
-         //randomTrack = 4;
+        randomTrack = Math.floor((Math.random() * 9));
+        //randomTrack = 4;
         randomPoints.reverse();
 
 
@@ -528,7 +528,7 @@ demo.addScene("car",function(){
         CylinderColor = 2;
         if(makeFuel == true) {
             var fuelShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius * 2.5, 20);
-            var fuelBody = new CANNON.Body({mass: 100});
+            var fuelBody = new CANNON.Body({mass: 10});
             fuelBody.addShape(fuelShape);
             fuelBody.position.x = (-sizeX * 0.5 / 2) + segments * -49 + 25;
             fuelBody.position.z = lastHeight + 0.5;
@@ -552,9 +552,9 @@ demo.addScene("car",function(){
 
         if(removebaan > 10)
         {
-                    world.remove(removebaanarray[removebaan - 9]);
-                    demo.removeVisual(removebaanarray[removebaan - 9]);
-                    delete removebaanarray[removebaan - 9];
+            world.remove(removebaanarray[0]);
+            demo.removeVisual(removebaanarray[0]);
+            removebaanarray.splice(0, 1);
         }
     }
 
