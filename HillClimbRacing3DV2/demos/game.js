@@ -34,6 +34,7 @@ var clock = new THREE.Clock();
 clock.start();
 var delta;
 var soundSpeed = 1;
+var startGame = false;
 
 
 var fuelArray = [];
@@ -90,6 +91,9 @@ demo.addScene("car",function(){
         customSlidingRotationalSpeed: -30,
         useCustomSlidingRotationalSpeed: true
     };
+    if(startGame == false){
+        $("#startGame").fadeIn(1000);
+    }
 
     // Create the vehicle
     vehicle = new CANNON.RaycastVehicle({
@@ -97,7 +101,7 @@ demo.addScene("car",function(){
     });
 
     wallShape = new CANNON.Box(new CANNON.Vec3(2, 1,0.5));
-    var wallBody = new CANNON.Body({ mass: 1000 });
+    var wallBody = new CANNON.Body({ mass: 9000 });
     wallBody.addShape(wallShape);
     wallBody.position.set(endpoint, chassisBody.position.y, chassisBody.position.z);
     world.add(wallBody);
@@ -603,6 +607,7 @@ function handler(event){
                 if(!gameOver) {
                     fuel -= fuelUsage;
                 }
+
             }
             else {
                 vehicle.applyEngineForce(up ? 0 : 0, 0);
@@ -610,6 +615,11 @@ function handler(event){
                 vehicle.applyEngineForce(up ? 0 : 0, 2);
                 vehicle.applyEngineForce(up ? 0 : 0, 3);
                 fuel = 0;
+            }
+            if(startGame == false)
+            {
+                startGame == true
+                $("#startGame").fadeOut(1000);
             }
             break;
 
@@ -630,6 +640,11 @@ function handler(event){
                     vehicle.setBrake(brakeForce, 2);
                     vehicle.setBrake(brakeForce, 3);
                 }
+            }
+            if(startGame == false)
+            {
+                startGame == true
+                $("#startGame").fadeOut(1000);
             }
             break;
 
