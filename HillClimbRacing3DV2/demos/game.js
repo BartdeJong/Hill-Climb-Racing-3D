@@ -78,7 +78,7 @@ demo.addScene("car",function(){
     var options = {
         radius: 0.5,
         directionLocal: new CANNON.Vec3(0, 0, -1),
-        suspensionStiffness: 30,
+        suspensionStiffness: 40,
         suspensionRestLength: 0.3,
         frictionSlip: 5,
         dampingRelaxation: 10,
@@ -108,16 +108,16 @@ demo.addScene("car",function(){
     // demo.addVisual(wallBody);
 
 
-    options.chassisConnectionPointLocal.set(1.6, 1, -0.3);
+    options.chassisConnectionPointLocal.set(1.6, 1, -0.5);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(1.6, -1, -0.3);
+    options.chassisConnectionPointLocal.set(1.6, -1, -0.5);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.6, 1, -0.3);
+    options.chassisConnectionPointLocal.set(-1.6, 1, -0.5);
     vehicle.addWheel(options);
 
-    options.chassisConnectionPointLocal.set(-1.6, -1, -0.3);
+    options.chassisConnectionPointLocal.set(-1.6, -1, -0.5);
     vehicle.addWheel(options);
 
     vehicle.addToWorld(world);
@@ -143,6 +143,7 @@ demo.addScene("car",function(){
             var t = vehicle.wheelInfos[i].worldTransform;
             wheelBodies[i].position.copy(t.position);
             wheelBodies[i].quaternion.copy(t.quaternion);
+        }
             positieX = chassisBody.position.x;
             positieXwheel = (wheelBodies[0].position.x + wheelBodies[2].position.x) / 2;
             positieZwheel = (wheelBodies[0].position.z + wheelBodies[2].position.z) / 2;
@@ -272,7 +273,7 @@ demo.addScene("car",function(){
                 $("#gameover").fadeOut(1000);
                 gameOver = false;
             }
-        }
+
         if(-(positieX / 49) + 6 > segments){
             segments++;
             createNewTrack()
@@ -310,9 +311,9 @@ demo.addScene("car",function(){
             dommeblokjes.push(wallBody2);
 
             if (dommeblokjes.length > 15) {
-                world.remove(dommeblokjes[teller]);
-                demo.removeVisual(dommeblokjes[teller]);
-                teller++;
+                world.remove(dommeblokjes[0]);
+                demo.removeVisual(dommeblokjes[0]);
+                dommeblokjes.splice(0, 1);
             }
             for (var i = 0; i < dommeblokjes.length; i++) {
                 dommeblokjes[i].position.x += 0.1;
@@ -558,9 +559,9 @@ demo.addScene("car",function(){
 
         if(removebaan > 10)
         {
-                    world.remove(removebaanarray[removebaan - 9]);
-                    demo.removeVisual(removebaanarray[removebaan - 9]);
-                    delete removebaanarray[removebaan - 9];
+            world.remove(removebaanarray[0]);
+            demo.removeVisual(removebaanarray[0]);
+            removebaanarray.splice(0, 1);
         }
     }
 
