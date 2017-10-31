@@ -573,7 +573,7 @@ document.onkeydown = handler;
 document.onkeyup = handler;
 
 var maxSteerVal = 0.5;
-var maxForce = 900;
+var maxForce = 600;
 var brakeForce = 30;
 
 function restartGame() {
@@ -661,7 +661,8 @@ function handler(event){
             break;
 
         case 82:
-            restartGame();
+            //restartGame();
+            document.location.reload();Fm
             break;
 
         case 79:

@@ -843,11 +843,6 @@ CANNON.Demo = function(options){
 
         if(e.keyCode){
             switch(e.keyCode){
-                case 32: // Space - restart
-                    restartCurrentScene();
-                    break;
-
-
                 case 97: // a - AABBs
                     settings.aabbs = !settings.aabbs;
                     updategui();
