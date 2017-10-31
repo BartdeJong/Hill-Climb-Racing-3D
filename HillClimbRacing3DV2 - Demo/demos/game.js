@@ -647,7 +647,7 @@ function handler(event){
             break;
 
         case 82:
-            restartGame();
+            document.location.reload();
             break;
 
         case 79:
