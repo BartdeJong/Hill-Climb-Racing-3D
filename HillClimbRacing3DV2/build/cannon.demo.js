@@ -651,7 +651,7 @@ CANNON.Demo = function(options){
         audioLoader.load( "../sounds/engine.wav", function( buffer ) {
             sound.setBuffer( buffer );
             sound.setLoop(true);
-            sound.setVolume(1);
+            sound.setVolume(2);
             sound.play();
             sound.hasPlaybackControl = true;
         });
@@ -659,7 +659,7 @@ CANNON.Demo = function(options){
         audioLoader.load( "../sounds/happy.wav", function( buffer ) {
             happyMusic.setBuffer( buffer );
             happyMusic.setLoop(true);
-            happyMusic.setVolume(0.15);
+            happyMusic.setVolume(0.3);
             happyMusic.play();
             happyMusic.hasPlaybackControl = true;
         });
@@ -693,7 +693,7 @@ CANNON.Demo = function(options){
             var Green = 0;
             var Blue = 0;
             if (positieX2 > 0) {
-                happyMusic.setVolume(0.15);
+                happyMusic.setVolume(0.3);
                 scaryMusic.setVolume(0);
             }
             if (positieX2 > -255 * snelheid) {
@@ -701,13 +701,13 @@ CANNON.Demo = function(options){
                 Blue = Math.round(255 + positieX2 / snelheid);
                 Red = 255;
                 light.intensity = 0.8;
-                happyMusic.setVolume(0.15);
+                happyMusic.setVolume(0.3);
                 scaryMusic.setVolume(0);
             }
             if (positieX2 <= -255 * snelheid && positieX2 > -510 * snelheid) {
                 Red = 255 + Math.round(positieX2 / snelheid) + 255;
-                happyMusic.setVolume(0.15 + 0.15 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)));
-                scaryMusic.setVolume(0 - 5 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)))
+                happyMusic.setVolume(0.3 + 0.3 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)));
+                scaryMusic.setVolume(0 - 10 * ((positieX2 + (255 * snelheid)) / (255 * snelheid)))
             }
             if (positieX2 <= -400 * snelheid) {
                 $("#scores").css({'color': 'white'});

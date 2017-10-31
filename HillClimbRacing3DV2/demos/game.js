@@ -8,7 +8,6 @@ var positieZwheel = 0;
 var last = 0;
 var segments = 0;
 var point = 0;
-var automatic = false;
 var removebaan = 0;
 var removebaanarray = [];
 var endpoint = 0;
@@ -45,11 +44,13 @@ var SpikeArray = [];
 var presetArray1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 demo.addScene("car",function(){
+    //create world
     var world = demo.getWorld();
     world.broadphase = new CANNON.SAPBroadphase(world);
     world.gravity.set(0, 0, -10);
     world.defaultContactMaterial.friction = 0.005;
 
+    //create materials
     var groundMaterial = new CANNON.Material("groundMaterial");
     var wheelMaterial = new CANNON.Material("wheelMaterial");
     var wheelGroundContactMaterial = window.wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groundMaterial, {
@@ -59,9 +60,10 @@ demo.addScene("car",function(){
     });
 
 
-    // We must add the contact materials to the world
+    // Add contact materials to the world
     world.addContactMaterial(wheelGroundContactMaterial);
 
+    //create the car body
     var chassisShapeTop;
     chassisShapeTop = new CANNON.Box(new CANNON.Vec3(1, 1,0.5));
 
@@ -75,6 +77,8 @@ demo.addScene("car",function(){
     chassisBody.angularVelocity.set(0, 0, 0.5);
     demo.addVisual(chassisBody);
     BoxColor = 0;
+
+    //Wheel options
     var options = {
         radius: 0.5,
         directionLocal: new CANNON.Vec3(0, 0, -1),
@@ -100,14 +104,14 @@ demo.addScene("car",function(){
         chassisBody: chassisBody,
     });
 
+    //Create the wall behind the car
     wallShape = new CANNON.Box(new CANNON.Vec3(2, 1,0.5));
     var wallBody = new CANNON.Body({ mass: 9000 });
     wallBody.addShape(wallShape);
     wallBody.position.set(endpoint, chassisBody.position.y, chassisBody.position.z);
     world.add(wallBody);
-    // demo.addVisual(wallBody);
 
-
+    //Create wheels and wheel positioning on the car body
     options.chassisConnectionPointLocal.set(1.6, 1, -0.5);
     vehicle.addWheel(options);
 
@@ -134,16 +138,18 @@ demo.addScene("car",function(){
         demo.addVisual(wheelBody);
     }
     CylinderColor = 0;
-    // Update wheels
+    // Update
     world.addEventListener('postStep', function(){
         delta  += clock.getDelta();
         soundSpeed = -chassisBody.velocity.x / 30;
+        // Move wheels
         for (var i = 0; i < vehicle.wheelInfos.length; i++) {
             vehicle.updateWheelTransform(i);
             var t = vehicle.wheelInfos[i].worldTransform;
             wheelBodies[i].position.copy(t.position);
             wheelBodies[i].quaternion.copy(t.quaternion);
         }
+        //Object positions
             positieX = chassisBody.position.x;
             positieXwheel = (wheelBodies[0].position.x + wheelBodies[2].position.x) / 2;
             positieZwheel = (wheelBodies[0].position.z + wheelBodies[2].position.z) / 2;
@@ -153,17 +159,22 @@ demo.addScene("car",function(){
             chassisBody.quaternion.x = 0;
             wheelposX = wheelBodies[0].position.x;
             wheelposZ = wheelBodies[0].position.z;
+
+            //Fuel and highscore
             $("#totalfuel").text(Math.floor(fuel));
             if(-score > chassisBody.position.x){
                 score = -chassisBody.position.x;
                 $("#totalhighscore").text(Math.floor(score) - 10);
             }
+
+
             if(gameOver)
             {
                 chassisBody.velocity.x = 0;
                 chassisBody.velocity.y = 0;
                 chassisBody.velocity.z = 0;
             }
+            // Pickup fuel
             for(var j = 0; j < fuelArray.length; j++){
                 if(fuelArray[j].position.x > chassisBody.position.x){
                     demo.removeVisual(fuelArray[j]);
@@ -171,6 +182,8 @@ demo.addScene("car",function(){
                     fuelArray.splice(0, 1);
                 }
             }
+
+            //Move trees
             if(terrain == 0) {
                 for (var i2 = 0; i2 < BottomTreeArray.length; i2++) {
                     if (BottomTreeArray[i2].position.x > chassisBody.position.x + 30) {
@@ -187,6 +200,7 @@ demo.addScene("car",function(){
 
             }
 
+                //Move spikes
                 for (var i3 = 0; i3 < SpikeArray.length; i3++)
                 {
                     if(SpikeArray[i3].position.x > chassisBody.position.x +30) {
@@ -199,7 +213,7 @@ demo.addScene("car",function(){
                     }
 
                  }
-
+            //Detect gameover
             if(score > 11) {
                 if (chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1 && wheelBodies[0].position.x < wheelBodies[2].position.x || fuel <= 0 && chassisBody.velocity.x > -0.1 && chassisBody.velocity.x < 0.1) {
                     if(delta > 1) {
@@ -213,11 +227,15 @@ demo.addScene("car",function(){
                     delta = 0;
                 }
             }
+
+            //Gameover
             if(chassisBody.velocity.z < -30){
                 $("#highscore").text(Math.round(score - 10));
                 $("#gameover").fadeIn(1000);
                 gameOver = true;
             }
+
+            //Restart game
             if(restartAlles){
                 last = 0;
                 segments = 0;
@@ -248,6 +266,8 @@ demo.addScene("car",function(){
                 chassisBody.velocity.z = 0;
                 chassisBody.position.set(-10, 0, 20);
                 chassisBody.quaternion.y = 0;
+
+                //move trees to start position
                 for(var j  =0; j < BottomTreeArray.length; j++)
                 {
                     treeSide = Math.floor((Math.random() * 2) + 0);
@@ -274,33 +294,25 @@ demo.addScene("car",function(){
                 gameOver = false;
             }
 
+        //call create track
         if(-(positieX / 49) + 6 > segments){
             segments++;
             createNewTrack()
         }
-        if(automatic == true) {
-            vehicle.applyEngineForce(100, 0);
-            vehicle.applyEngineForce(100, 1);
-            vehicle.applyEngineForce(100, 2);
-            vehicle.applyEngineForce(100, 3);
-        }
-
+        //Move Wall
         if(endpoint > wheelBodies[3].position.x + 30)
         {
             endpoint = wheelBodies[3].position.x + 30;
-            // vehicle.setBrake(brakeForce, 2);
-            // vehicle.setBrake(brakeForce, 3);
             wallBody.position.set(endpoint, chassisBody.position.y, chassisBody.position.z);
         }
         else
         {
             wallBody.position.set(endpoint, chassisBody.position.y, chassisBody.position.z);
         }
-        // wallBody.quaternion.x = 0;
-        // wallBody.quaternion.y = 0;
-        // wallBody.quaternion.z = 0;
 
         teller2++;
+
+        //Create exhaust
         if(teller2 > 3) {
             wallShape2 = new CANNON.Box(new CANNON.Vec3(0.10, 0.10, 0.10));
             var wallBody2 = new CANNON.Body({mass: 0.0001});
@@ -320,15 +332,12 @@ demo.addScene("car",function(){
             }
             teller2 = 0;
         }
+        //Change terrain
         if (score > terrainvalue)
         {
             terrain = 1;
         }
-        // if(score) {
-        //     terrain = 0;
-        //
-        // }
-
+        //Braking off
         vehicle.setBrake(0, 0);
         vehicle.setBrake(0, 1);
         vehicle.setBrake(0, 2);
@@ -338,6 +347,8 @@ demo.addScene("car",function(){
 
 
     createInitialTrack();
+
+    //Create trees
     createTrees();
     function createTrees() {
         for(var i = 0; i < 40; i++)
@@ -372,6 +383,8 @@ demo.addScene("car",function(){
         }
 
     }
+
+    //Create spikes
     createSpikes();
     function createSpikes() {
         CylinderColor = 1;
@@ -398,12 +411,12 @@ demo.addScene("car",function(){
         CylinderColor = 0;
     }
 
-
+    // Create matrix for base track
     function createInitialTrack(){
         var matrix = [];
         var sizeX = 100,
             sizeY = 12;
-
+        //Create matrix for track
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
@@ -414,7 +427,7 @@ demo.addScene("car",function(){
                 matrix[i].push(height);
             }
         }
-
+        //Use matrix in hightfield
         var hfShape = new CANNON.Heightfield(matrix, {
             elementSize: 1 / 200 * sizeX
         });
@@ -427,6 +440,7 @@ demo.addScene("car",function(){
         removebaan++;
     }
 
+    //Create new matrix for random track
     function createNewTrack() {
         var matrix = [];
         var sizeX = 100,
@@ -434,26 +448,28 @@ demo.addScene("car",function(){
         var lastHeight;
         var lastHeight2;
 
+        //Create matrix for track
         var randomPoints = [];
-        var yUp = 0.2 * (Math.random() - 0.5);
+        var yUp = 0.1 * (Math.random());
         for (var i = 0; i < sizeX; i++) {
             if (i != 0) {
                 point = randomPoints[i - 1] + THREE.Math.randFloat(-0.1, 0.1) + yUp;
             }
             randomPoints.push(point);
             fuelCounter++;
+            //Spawn fuel after x distance
             if(fuelCounter >= nextFuel){
                 fuelCounter = 0;
                 nextFuel += 50;
                 makeFuel = true;
             }
         }
+        //Choose a random preset
         randomTrack = Math.floor((Math.random() * 5));
-         //randomTrack = 4;
         randomPoints.reverse();
 
 
-
+        //Random tracks
         for (var i = 0; i < sizeX; i++) {
             matrix.push([]);
             for (var j = 0; j < sizeY; j++) {
@@ -531,7 +547,7 @@ demo.addScene("car",function(){
                 matrix[i].push(height);
             }
         }
-
+        //Create fuel
         CylinderColor = 2;
         if(makeFuel == true) {
             var fuelShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius * 2.5, 20);
@@ -544,6 +560,7 @@ demo.addScene("car",function(){
             makeFuel = false;
 
         }
+        //Make heightfield for track
         CylinderColor = 0;
         var hfShape = new CANNON.Heightfield(matrix, {
             elementSize: 1 / 200 * sizeX
@@ -557,6 +574,7 @@ demo.addScene("car",function(){
         removebaanarray.push(hfBody);
         removebaan++;
 
+        //Delete first track
         if(removebaan > 10)
         {
             world.remove(removebaanarray[0]);
@@ -572,8 +590,9 @@ demo.start();
 document.onkeydown = handler;
 document.onkeyup = handler;
 
-var maxSteerVal = 0.5;
-var maxForce = 600;
+//max engine force
+var maxForce = 400;
+//Max brake force
 var brakeForce = 30;
 
 function restartGame() {
@@ -589,7 +608,7 @@ function handler(event){
     if(!up && event.type !== 'keydown'){
         return;
     }
-
+    //Reset brake force
     vehicle.setBrake(0, 0);
     vehicle.setBrake(0, 1);
     vehicle.setBrake(0, 2);
@@ -648,7 +667,7 @@ function handler(event){
                 $("#startGame").fadeOut(1000);
             }
             break;
-
+        //Brake
         case 66: // b
             vehicle.setBrake(brakeForce, 0);
             vehicle.setBrake(brakeForce, 1);
@@ -656,27 +675,9 @@ function handler(event){
             vehicle.setBrake(brakeForce, 3);
             break;
 
-        case 70:
-            fuel += 5;
+        //Restart game
+        case 82: // R
+            restartGame();
             break;
-
-        case 82:
-            //restartGame();
-            document.location.reload();Fm
-            break;
-
-        case 79:
-            vehicle.chassisBody.quaternion.y = 0;
-            break;
-//            case 39: // right
-//                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 0);
-//                vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 1);
-//                break;
-//
-//            case 37: // left
-//                vehicle.setSteeringValue(up ? 0 : maxSteerVal, 0);
-//                vehicle.setSteeringValue(up ? 0 : maxSteerVal, 1);
-//                break;
-
     }
 }
